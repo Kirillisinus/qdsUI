@@ -8,7 +8,7 @@
       <i class="icon-arrow-right"></i>
     </router-link>
     <router-link class="button create-room" to="#">
-      <div>Хочу создать комнату</div>
+      <div>Cоздать комнату</div>
       <i class="icon-arrow-right"></i>
     </router-link>
   </div>
