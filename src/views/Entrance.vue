@@ -4,10 +4,9 @@
   </div>
   <div class="entrance">
     <span class="invite">Представьтесь, пожалуйста </span>
-    <input type="text" class="input-name" placeholder="Гость123123123" />
-
-    <router-link class="button continue" to="/lobby">
-      <div>Продолжить как Гость123123123</div>
+    <input type="text" class="input-name" placeholder="Гость123123123" v-model="name"/>
+    <router-link class="button continue" to="/lobby" v-on:click="connectSocket">
+      <div>Продолжить как {{name}}</div>
       <i class="icon-arrow-right"></i>
     </router-link>
     <router-link class="button create-room" to="#">
@@ -16,6 +15,26 @@
     </router-link>
   </div>
 </template>
+
+<script>
+export default{
+  data() {
+    return {
+      name: String ="Гость123123123"
+    }
+  },
+  methods: {
+    /*connectSocket: function(event) {
+      const socket = io("http://localhost:3000/enter");
+
+      const message = this.name;
+      const handleSubmitNewMessage = () => {
+          socket.emit('message', {data: message});
+      }
+    }*/
+  }
+}
+</script>
 
 <style>
 #logo {

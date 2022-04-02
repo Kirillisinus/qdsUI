@@ -7,6 +7,15 @@
 </template>
 
 <script>
+import SocketioService from './services/socketio.service';
+
+ export default {
+  /*created() {
+    this.socket.on('msgToClient', (message) => {
+      this.receivedMessage(message)
+    })
+  }*/
+}
 </script>
 
 <style>

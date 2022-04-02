@@ -8,18 +8,18 @@
       <section class="players">
         <div class="count-players">Players 1/16</div>
         <div class="player">Гость123123123</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
-        <div class="player empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
+        <div class="empty">Empty</div>
       </section>
       <section class="game-settings">
         <div class="settings-text">Custom settings</div>
@@ -38,6 +38,9 @@
     </div>
   </div>
 </template>
+
+
+
 
 <style>
 .btn-back {
