@@ -1,4 +1,7 @@
 <template>
+  <div id="header">
+    <img src="../images/logo_transparent.png" alt="logo" id="logo" />
+  </div>
   <div class="entrance">
     <span class="invite">Представьтесь, пожалуйста </span>
     <input type="text" class="input-name" placeholder="Гость123123123" />
@@ -15,6 +18,12 @@
 </template>
 
 <style>
+#logo {
+  display: block;
+  margin: auto;
+  width: 170px;
+}
+
 .entrance {
   display: flex;
   flex-direction: column;

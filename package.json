@@ -11,6 +11,7 @@
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
+    "vue-loadmore": "^2.0.0",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
   },
@@ -30,6 +31,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-vue": "^8.0.3",
-    "typescript": "~4.5.5"
+    "typescript": "~4.5.5",
+    "vuejs-loadmore": "^1.0.7"
   }
 }
