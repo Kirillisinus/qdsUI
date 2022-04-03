@@ -5,7 +5,7 @@
   <div class="entrance">
     <span class="invite">Представьтесь, пожалуйста </span>
     <input type="text" class="input-name" placeholder="Гость123123123" v-model="name"/>
-    <router-link class="button continue" to="/lobby" v-on:click="connectSocket">
+    <router-link class="button continue" to="/lobby" v-on:click="setCookie">
       <div>Продолжить как {{name}}</div>
       <i class="icon-arrow-right"></i>
     </router-link>
@@ -24,14 +24,10 @@ export default{
     }
   },
   methods: {
-    /*connectSocket: function(event) {
-      const socket = io("http://localhost:3000/enter");
-
-      const message = this.name;
-      const handleSubmitNewMessage = () => {
-          socket.emit('message', {data: message});
-      }
-    }*/
+    setCookie(){
+      this.$cookies.set("username",this.name,"1d");
+      console.log(document.cookie);
+    }
   }
 }
 </script>

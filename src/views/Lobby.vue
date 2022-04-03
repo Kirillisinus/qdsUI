@@ -7,7 +7,7 @@
     <div class="room">
       <section class="players">
         <div class="count-players">Players 1/16</div>
-        <div class="player">Гость123123123</div>
+        <div class="player">{{ name }}</div>
         <div class="empty">Empty</div>
         <div class="empty">Empty</div>
         <div class="empty">Empty</div>
@@ -39,8 +39,20 @@
   </div>
 </template>
 
-
-
+<script>
+export default {
+  data() {
+    return {
+      name: (String = ""),
+    };
+  },
+  methods: {
+    mounted() {
+      this.name = this.$cookies.get("username");
+    },
+  },
+};
+</script>
 
 <style>
 .btn-back {

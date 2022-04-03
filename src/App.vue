@@ -1,5 +1,4 @@
 <template>
-  
   <div id="content">
     <router-view />
   </div>
@@ -7,20 +6,10 @@
 </template>
 
 <script>
-import SocketioService from './services/socketio.service';
-
- export default {
-  /*created() {
-    this.socket.on('msgToClient', (message) => {
-      this.receivedMessage(message)
-    })
-  }*/
-}
+export default {};
 </script>
 
 <style>
-@charset "utf-8";
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -32,8 +21,6 @@ body {
   background-color: #fff6e1;
 }
 
-
-
 #content {
   margin: 30px 2em;
   padding: 20px;
@@ -42,8 +29,9 @@ body {
   /*border-width: 5px 3px 3px 5px;
   border-radius: 95% 4% 97% 5%/4% 94% 3% 95%;*/
   border: 4px #f5d731f1 solid;
-    box-shadow: inset 0px 2px 0px 0px rgb(255 255 255 / 15%), 0px 3px 0px 0px rgb(255 255 255 / 15%);
-    border-radius: 12px;
+  box-shadow: inset 0px 2px 0px 0px rgb(255 255 255 / 15%),
+    0px 3px 0px 0px rgb(255 255 255 / 15%);
+  border-radius: 12px;
 }
 
 @media (max-width: 877px) {
