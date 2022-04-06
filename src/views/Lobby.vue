@@ -25,10 +25,10 @@
         <div class="settings-text">Custom settings</div>
         <div class="settings"></div>
         <div class="start-game">
-          <div class="button start-btn">
+          <router-link class="button start-btn" to="/write">
             <div>Начать</div>
             <i class="icon-arrow-right"></i>
-          </div>
+          </router-link>
           <div class="button invite-btn">
             <div>Пригласить</div>
             <i class="icon-arrow-right"></i>
@@ -66,6 +66,7 @@ export default {
 }
 
 .back {
+  text-transform: uppercase;
   color: inherit;
   text-decoration: inherit;
   width: 130px;

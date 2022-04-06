@@ -4,9 +4,14 @@
   </div>
   <div class="entrance">
     <span class="invite">Представьтесь, пожалуйста </span>
-    <input type="text" class="input-name" placeholder="Гость123123123" v-model="name"/>
+    <input
+      type="text"
+      class="input-name"
+      placeholder="Гость123123123"
+      v-model="name"
+    />
     <router-link class="button continue" to="/lobby" v-on:click="setCookie">
-      <div>Продолжить как {{name}}</div>
+      <div>Продолжить как {{ name }}</div>
       <i class="icon-arrow-right"></i>
     </router-link>
     <router-link class="button create-room" to="#">
@@ -17,19 +22,19 @@
 </template>
 
 <script>
-export default{
+export default {
   data() {
     return {
-      name: String ="Гость123123123"
-    }
+      name: (String = "Гость123123123"),
+    };
   },
   methods: {
-    setCookie(){
-      this.$cookies.set("username",this.name,"1d");
+    setCookie() {
+      this.$cookies.set("username", this.name, "1d");
       console.log(document.cookie);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>
