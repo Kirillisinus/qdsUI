@@ -3,6 +3,7 @@
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
+
       <div class="timer">
         <svg
           class="timer__svg"
@@ -10,13 +11,12 @@
           xmlns="http://www.w3.org/2000/svg"
         >
           <g class="timer__circle">
-            <circle class="timer__path-elapsed" cx="50" cy="50" r="45" />
+            <circle class="timer__path-elapsed" cx="50" cy="50" r="45"></circle>
             <path
               id="timer-path-remaining"
               stroke-dasharray="283"
-              class="timer__path-remaining ${remainingPathColor}"
-              d="
-          M 50, 50
+              class="timer__path-remaining"
+              d="M 50, 50
           m -45, 0
           a 45,45 0 1,0 90,0
           a 45,45 0 1,0 -90,0
@@ -24,8 +24,8 @@
             ></path>
           </g>
         </svg>
-        <span>
-          <!-- Remaining time label -->
+        <span id="timer-label" class="timer__label">
+          {{ timeLeft }}
         </span>
       </div>
     </div>
@@ -46,8 +46,39 @@
 </template>
 
 <script>
+export default {
+  data() {
+    return {
+      timeLeft: this.$store.getters.getTimeLimit,
+    };
+  },
+  mounted() {
+    this.updateTime();
+  },
+  computed: {},
+  methods: {
+    updateTime() {
+      if (this.timeLeft > 0) {
+        setTimeout(() => {
+          this.timeLeft -= 1;
+          this.updateTime();
+          /*setCircleDasharray();*/
+        }, 1000);
+      }
+    },
+    /*calculateTimeFraction() {
+      return timeLeft / this.$store.getters.getTimeLimit;
+    },
+    setCircleDasharray() {
+      const circleDasharray =
+        "${(calculateTimeFraction() * FULL_DASH_ARRAY).toFixed(0)} 283";
+      document
+        .getElementById("base-timer-path-remaining")
+        .setAttribute("stroke-dasharray", circleDasharray);
+    },*/
+  },
+};
 </script>
-
 
 <style>
 #logo-write {
@@ -65,50 +96,30 @@
   fill: none;
   stroke: none;
 }
-
-/* The SVG path that displays the timer's progress */
 .timer__path-elapsed {
   stroke-width: 7px;
   stroke: grey;
 }
 .timer__label {
   position: absolute;
-
-  /* Size should match the parent container */
-  width: 300px;
-  height: 300px;
-
-  /* Keep the label aligned to the top */
-  top: 0;
-
-  /* Create a flexible box that centers content vertically and horizontally */
+  width: 30px;
+  height: 30px;
+  top: 8px;
+  left: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* Sort of an arbitrary number; adjust to your liking */
-  font-size: 48px;
+  font-size: 26px;
 }
 .timer__path-remaining {
-  /* Такая же ширина, что и у исходного кольца */
   stroke-width: 7px;
-
-  /* Замыкаем концы линии, чтобы создать круг */
   stroke-linecap: round;
-
-  /* Делаем так, чтобы анимация начиналась вверху */
   transform: rotate(90deg);
-  transform-origin: center;
-
-  /* Одна секунда подгоняется под таймер обратного отсчета */
   transition: 1s linear all;
-
-  /* Задаем смену цвета кольца, когда обновляется значение цвета */
-  stroke: currentColor;
+  stroke: black;
 }
 
 .timer__svg {
-  /* Переворачиваем кольцо и задаем движение анимации слева направо */
   transform: scaleX(-1);
 }
 .middle-logo {
@@ -148,14 +159,14 @@
   align-content: center;
   align-items: center;
   display: flex;
-  width: 150vh;
+  width: 80vw;
   height: 8vh;
   padding-left: 100px;
 }
 .sentence {
-  width: 100vh;
+  width: 100vw;
   height: 6vh;
-  margin-right: 10vh;
+  margin-right: 1em;
   font-size: 40px;
 }
 

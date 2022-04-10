@@ -11,7 +11,9 @@
         <div class="album-name">album</div>
         <div class="settings"></div>
         <div class="end-game">
-          <div class="end"><p class="end-p">end of 's album</p></div>
+          <div class="end">
+            <p class="end-p">end of {{ name }}'s album</p>
+          </div>
 
           <button class="write">new turn</button>
         </div>
@@ -21,6 +23,19 @@
 </template>
 
 <script >
+export default {
+  data() {
+    return {
+      name: "",
+    };
+  },
+  async mounted() {
+    if (localStorage.name) {
+      this.name = localStorage.name;
+    }
+  },
+  methods: {},
+};
 </script>
 
 <style>

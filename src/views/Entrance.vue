@@ -1,8 +1,8 @@
 <template>
-  <div id="header">
-    <img src="../images/logo_transparent.png" alt="logo" id="logo" />
-  </div>
   <div class="entrance">
+    <div id="header">
+      <img src="../images/logo_transparent.png" alt="logo" id="logo" />
+    </div>
     <span class="invite">Представьтесь, пожалуйста </span>
     <input
       type="text"
@@ -10,7 +10,7 @@
       placeholder="Гость123123123"
       v-model="name"
     />
-    <router-link class="button continue" to="/lobby" v-on:click="setCookie">
+    <router-link class="button continue" @click="saveName" to="/lobby">
       <div>Продолжить как {{ name }}</div>
       <i class="icon-arrow-right"></i>
     </router-link>
@@ -28,10 +28,14 @@ export default {
       name: (String = "Гость123123123"),
     };
   },
+  async mounted() {
+    if (localStorage.name) {
+      this.name = localStorage.name;
+    }
+  },
   methods: {
-    setCookie() {
-      this.$cookies.set("username", this.name, "1d");
-      console.log(document.cookie);
+    saveName() {
+      localStorage.name = this.name;
     },
   },
 };

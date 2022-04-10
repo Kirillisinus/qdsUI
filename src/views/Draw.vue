@@ -24,8 +24,8 @@
             ></path>
           </g>
         </svg>
-        <span>
-          <!-- Remaining time label -->
+        <span id="timer-label" class="timer__label">
+          {{ timeLeft }}
         </span>
       </div>
     </div>
@@ -33,8 +33,8 @@
       <canvas id="canvas">Обновите браузер</canvas>
       <div class="cursor" id="cursor"></div>
       <div class="controls">
-        <div class="btn-row">
-          <!--<button type="button"
+        <!--<div class="btn-row">
+          <button type="button"
 								v-on:click="removeHistoryItem"
 								v-bind:class="{ disabled: !history.length }" title="Undo"> <i class="ion ion-reply"></i>remove </button>
         </div>
@@ -42,16 +42,29 @@
           <button type="button"
 								v-on:click="removeAllHistory"
 								v-bind:class="{ disabled: !history.length }" title="Clear all"> <i class="ion ion-trash-a"></i>delete </button>
-        </div>
+        </div>-->
+
         <div class="btn-row">
-          <input type="color" class="palette-input">
+          <input type="color" class="palette-input" />
         </div>
+
         <div class="btn-row">
-          <label v-for="sizeItem in sizes" class="size-item">
-            <input type="radio" name="size" v-model="size" v-bind:value="sizeItem">
-            <span class="size"
-									v-bind:style="{width: sizeItem + 'px', height: sizeItem + 'px'}"
-									v-on:click="popups.showSize = !popups.showSize"></span> </label>-->
+          <label
+            v-for="sizeItem in sizes"
+            class="size-item"
+            v-bind:key="sizeItem"
+          >
+            <input
+              type="radio"
+              name="size"
+              v-model="size"
+              v-bind:value="sizeItem"
+            />
+            <span
+              class="size"
+              v-bind:style="{ width: sizeItem + 'px', height: sizeItem + 'px' }"
+            ></span>
+          </label>
         </div>
         <div class="btn-row"></div>
         <router-link class="write" to="/album">done</router-link>
@@ -62,6 +75,30 @@
 </template>
 
 <script>
+export default {
+  data() {
+    return {
+      timeLeft: this.$store.getters.getTimeLimit,
+      size: 12,
+      sizes: [6, 12, 24, 48],
+    };
+  },
+  mounted() {
+    this.updateTime();
+  },
+  computed: {},
+  methods: {
+    updateTime() {
+      if (this.timeLeft > 0) {
+        setTimeout(() => {
+          this.timeLeft -= 1;
+          this.updateTime();
+          /*setCircleDasharray();*/
+        }, 1000);
+      }
+    },
+  },
+};
 </script>
 
 <style>
@@ -83,8 +120,8 @@
 }
 
 #canvas {
-  width: 80%;
-  height: calc(60vh - 60px);
+  width: 60vw;
+  height: 60vh;
   background-color: white;
   cursor: none;
   border-radius: 20px;
@@ -92,10 +129,10 @@
 }
 
 #canvas:hover + .cursor {
-  opacity: 1;
+  opacity: 3;
 }
 #canvas:active + .cursor {
-  border-color: rgb(60, 60, 60);
+  border-color: rgb(0, 0, 0);
 }
 
 .controls {

@@ -5,22 +5,24 @@
   </div>
   <div class="lobby">
     <div class="room">
-      <section class="players">
+      <div class="right-side">
         <div class="count-players">Players 1/16</div>
-        <div class="player">{{ name }}</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-        <div class="empty">Empty</div>
-      </section>
+        <section class="players">
+          <div class="player">{{ name }}</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>
+        </section>
+      </div>
       <section class="game-settings">
         <div class="settings-text">Custom settings</div>
         <div class="settings"></div>
@@ -43,14 +45,15 @@
 export default {
   data() {
     return {
-      name: (String = ""),
+      name: "",
     };
   },
-  methods: {
-    mounted() {
-      this.name = this.$cookies.get("username");
-    },
+  async mounted() {
+    if (localStorage.name) {
+      this.name = localStorage.name;
+    }
   },
+  methods: {},
 };
 </script>
 
@@ -98,24 +101,33 @@ export default {
 
 .room {
   display: flex;
-  max-height: 75vh;
+  max-height: 70vh;
 }
-.players {
+.right-side {
   border-radius: 20px;
   background: rgba(255, 234, 13, 0.28);
   min-width: 35%;
+  margin: 0 1.5em;
+}
+.players {
+  max-height: 65vh;
   display: inherit;
   flex-direction: column;
   align-items: center;
   font-size: 2.5vw;
-  margin: 0 1.5em;
-  padding: 0.5em;
+  padding: 0 0.5em;
   overflow: scroll;
 }
+.players::-webkit-scrollbar,
+.count-players::-webkit-scrollbar {
+  width: 0;
+}
 .count-players {
+  background: none;
   font-size: 3vw;
-
   -webkit-text-fill-color: orange;
+  text-align: center;
+  margin-top: 10px;
 }
 .player {
   border: 2px solid black;

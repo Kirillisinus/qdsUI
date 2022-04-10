@@ -19,7 +19,6 @@ export default {};
 
 body {
   background-color: #fff6e1;
-  height:100%
 }
 
 #content {
@@ -33,7 +32,7 @@ body {
   box-shadow: inset 0px 2px 0px 0px rgb(255 255 255 / 15%),
     0px 3px 0px 0px rgb(255 255 255 / 15%);
   border-radius: 12px;
-  min-height:0;
+  max-height: 100vh;
 }
 
 @media (max-width: 877px) {
