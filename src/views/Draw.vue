@@ -3,31 +3,7 @@
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <div class="timer">
-        <svg
-          class="timer__svg"
-          viewBox="0 0 100 100"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g class="timer__circle">
-            <circle class="timer__path-elapsed" cx="50" cy="50" r="45" />
-            <path
-              id="timer-path-remaining"
-              stroke-dasharray="283"
-              class="timer__path-remaining ${remainingPathColor}"
-              d="
-          M 50, 50
-          m -45, 0
-          a 45,45 0 1,0 90,0
-          a 45,45 0 1,0 -90,0
-        "
-            ></path>
-          </g>
-        </svg>
-        <span id="timer-label" class="timer__label">
-          {{ timeLeft }}
-        </span>
-      </div>
+      <baseTimer class="base-timer"/>
     </div>
     <div class="middle">
       <canvas id="canvas">Обновите браузер</canvas>
@@ -75,29 +51,20 @@
 </template>
 
 <script>
+import baseTimer from "../components/baseTimer.vue";
 export default {
+  components: {
+    baseTimer,
+  },
   data() {
     return {
-      timeLeft: this.$store.getters.getTimeLimit,
       size: 12,
       sizes: [6, 12, 24, 48],
     };
   },
-  mounted() {
-    this.updateTime();
-  },
   computed: {},
   methods: {
-    updateTime() {
-      if (this.timeLeft > 0) {
-        setTimeout(() => {
-          this.timeLeft -= 1;
-          this.updateTime();
-          /*setCircleDasharray();*/
-        }, 1000);
-      }
-    },
-  },
+  }
 };
 </script>
 
