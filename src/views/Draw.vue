@@ -3,38 +3,14 @@
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <div class="timer">
-        <svg
-          class="timer__svg"
-          viewBox="0 0 100 100"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g class="timer__circle">
-            <circle class="timer__path-elapsed" cx="50" cy="50" r="45" />
-            <path
-              id="timer-path-remaining"
-              stroke-dasharray="283"
-              class="timer__path-remaining ${remainingPathColor}"
-              d="
-          M 50, 50
-          m -45, 0
-          a 45,45 0 1,0 90,0
-          a 45,45 0 1,0 -90,0
-        "
-            ></path>
-          </g>
-        </svg>
-        <span>
-          <!-- Remaining time label -->
-        </span>
-      </div>
+      <baseTimer class="base-timer"/>
     </div>
     <div class="middle">
       <canvas id="canvas">Обновите браузер</canvas>
       <div class="cursor" id="cursor"></div>
       <div class="controls">
-        <div class="btn-row">
-          <!--<button type="button"
+        <!--<div class="btn-row">
+          <button type="button"
 								v-on:click="removeHistoryItem"
 								v-bind:class="{ disabled: !history.length }" title="Undo"> <i class="ion ion-reply"></i>remove </button>
         </div>
@@ -42,16 +18,29 @@
           <button type="button"
 								v-on:click="removeAllHistory"
 								v-bind:class="{ disabled: !history.length }" title="Clear all"> <i class="ion ion-trash-a"></i>delete </button>
-        </div>
+        </div>-->
+
         <div class="btn-row">
-          <input type="color" class="palette-input">
+          <input type="color" class="palette-input" />
         </div>
+
         <div class="btn-row">
-          <label v-for="sizeItem in sizes" class="size-item">
-            <input type="radio" name="size" v-model="size" v-bind:value="sizeItem">
-            <span class="size"
-									v-bind:style="{width: sizeItem + 'px', height: sizeItem + 'px'}"
-									v-on:click="popups.showSize = !popups.showSize"></span> </label>-->
+          <label
+            v-for="sizeItem in sizes"
+            class="size-item"
+            v-bind:key="sizeItem"
+          >
+            <input
+              type="radio"
+              name="size"
+              v-model="size"
+              v-bind:value="sizeItem"
+            />
+            <span
+              class="size"
+              v-bind:style="{ width: sizeItem + 'px', height: sizeItem + 'px' }"
+            ></span>
+          </label>
         </div>
         <div class="btn-row"></div>
         <router-link class="write" to="/album">done</router-link>
@@ -62,6 +51,21 @@
 </template>
 
 <script>
+import baseTimer from "../components/baseTimer.vue";
+export default {
+  components: {
+    baseTimer,
+  },
+  data() {
+    return {
+      size: 12,
+      sizes: [6, 12, 24, 48],
+    };
+  },
+  computed: {},
+  methods: {
+  }
+};
 </script>
 
 <style>
@@ -83,8 +87,8 @@
 }
 
 #canvas {
-  width: 80%;
-  height: calc(60vh - 60px);
+  width: 60vw;
+  height: 60vh;
   background-color: white;
   cursor: none;
   border-radius: 20px;
@@ -92,10 +96,10 @@
 }
 
 #canvas:hover + .cursor {
-  opacity: 1;
+  opacity: 3;
 }
 #canvas:active + .cursor {
-  border-color: rgb(60, 60, 60);
+  border-color: rgb(0, 0, 0);
 }
 
 .controls {
