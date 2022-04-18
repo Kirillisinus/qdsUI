@@ -73,7 +73,7 @@ export default {
 .card {
   margin-top: 0.5em;
   text-transform: uppercase;
-  font-size: 10vh;
+  font-size: 8vh;
   margin-bottom: 10px;
 }
 .input {

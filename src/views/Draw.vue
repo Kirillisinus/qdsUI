@@ -9,11 +9,7 @@
       <canvas id="canvas">Обновите браузер</canvas>
       <div class="cursor" id="cursor"></div>
       <div class="controls">
-        <!--<div class="btn-row">
-          <button type="button"
-								v-on:click="removeHistoryItem"
-								v-bind:class="{ disabled: !history.length }" title="Undo"> <i class="ion ion-reply"></i>remove </button>
-        </div>
+        <!--
         <div class="btn-row">
           <button type="button"
 								v-on:click="removeAllHistory"
