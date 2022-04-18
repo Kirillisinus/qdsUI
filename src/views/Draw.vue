@@ -3,21 +3,18 @@
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <baseTimer class="base-timer"/>
+      <baseTimer class="base-timer" />
     </div>
     <div class="middle">
-      <canvas id="canvas">Обновите браузер</canvas>
-      <div class="cursor" id="cursor"></div>
+      <canvas id="canvas">Обновите браузер!</canvas>
       <div class="controls">
-        <!--
         <div class="btn-row">
-          <button type="button"
-								v-on:click="removeAllHistory"
-								v-bind:class="{ disabled: !history.length }" title="Clear all"> <i class="ion ion-trash-a"></i>delete </button>
-        </div>-->
+          <button type="button" v-on:click="clear" class="back">Clear</button>
+        </div>
+        -
 
         <div class="btn-row">
-          <input type="color" class="palette-input" />
+          <div class="palette back"></div>
         </div>
 
         <div class="btn-row">
@@ -59,15 +56,73 @@ export default {
     };
   },
   computed: {},
+  mounted() {
+    var vm = this
+    vm.canvas=vm.$refs.canvas;
+    vm.context=vm.canvas.getContext("2d");
+    vm.canvas.addEventListener('mousedown',vm.mousedown);
+    vm.canvas.addEventListener('mousemove',vm.mousemove)
+    document.addEventListener('mouseup',vm.mouseup);
+    /*var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    context.lineCap = "round";
+    context.lineWidth = 8;*/
+  },
   methods: {
-  }
+    clear() {
+      this.context.clearRect(0, 0, canvas.width, canvas.height);
+    },
+     mousedown(e){
+      var vm = this;
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      
+      vm.isDrawing = true;
+      vm.startX = x;
+      vm.startY = y;
+      vm.points.push({
+        x: x,
+        y: y
+      });
+    },
+    mousemove(e){
+      var vm = this;
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      
+      if (vm.isDrawing) {
+        vm.context.beginPath();
+        vm.context.moveTo(vm.startX, vm.startY);
+        vm.context.lineTo(x, y);
+        vm.context.lineWidth = 1;
+        vm.context.lineCap = 'round';
+        vm.context.strokeStyle = "rgba(0,0,0,1)";
+        vm.context.stroke();
+        
+        vm.startX = x;
+        vm.startY = y;  
+        
+        vm.points.push({
+          x: x,
+          y: y
+        });
+      }
+    },
+    mouseup(e){
+      var vm = this
+      vm.isDrawing = false;
+      if (vm.points.length > 0) {
+        localStorage['points'] = JSON.stringify(vm.points);    
+      }
+    }
+  },
 };
 </script>
 
 <style>
 @charset "utf-8";
 
-.cursor {
+/*.cursor {
   position: fixed;
   top: 0;
   left: 0;
@@ -80,15 +135,15 @@ export default {
   mix-blend-mode: difference;
   opacity: 0;
   transition: opacity 1s;
-}
+}*/
 
 #canvas {
   width: 60vw;
   height: 60vh;
   background-color: white;
-  cursor: none;
   border-radius: 20px;
   border: 2px solid orange;
+  cursor: crosshair;
 }
 
 #canvas:hover + .cursor {
