@@ -6,7 +6,7 @@
       <baseTimer class="base-timer" />
     </div>
     <div class="middle">
-      <canvas id="canvas">Обновите браузер!</canvas>
+      <canvas ref="canvas" id="canvas">Обновите браузер!</canvas>
       <div class="controls">
         <div class="btn-row">
           <button type="button" v-on:click="clear" class="back">Clear</button>
@@ -53,6 +53,12 @@ export default {
     return {
       size: 12,
       sizes: [6, 12, 24, 48],
+      canvas: null,
+      context: null,
+      isDrawing: false,
+      startX: 0,
+      startY: 0,
+      points: [],
     };
   },
   computed: {},
@@ -69,11 +75,9 @@ export default {
     context.lineWidth = 8;*/
   },
   methods: {
-    clear() {
-      this.context.clearRect(0, 0, canvas.width, canvas.height);
-    },
-     mousedown(e){
-      var vm = this;
+    mousedown(e){
+      var vm = this
+      var rect = vm.canvas.getBoundingClientRect();
       var x = e.clientX - rect.left;
       var y = e.clientY - rect.top;
       
@@ -86,7 +90,8 @@ export default {
       });
     },
     mousemove(e){
-      var vm = this;
+      var vm = this
+      var rect = vm.canvas.getBoundingClientRect();
       var x = e.clientX - rect.left;
       var y = e.clientY - rect.top;
       
@@ -113,6 +118,53 @@ export default {
       vm.isDrawing = false;
       if (vm.points.length > 0) {
         localStorage['points'] = JSON.stringify(vm.points);    
+      }
+    },
+    resetCanvas(){
+      var vm = this
+      vm.canvas.width = vm.canvas.width;
+      vm.points.length = 0; // reset points array
+    },
+    saveImage(){
+      var vm = this
+      var dataURL = vm.canvas.toDataURL();
+      var img = vm.$refs.img;
+      img.src = dataURL;
+    },
+    replay(){
+      var vm = this
+      vm.canvas.width = vm.canvas.width;
+      
+      // load localStorage
+      if (vm.points.length === 0) {
+        if (localStorage["points"] !== undefined) {
+          vm.points = JSON.parse(localStorage["points"]);
+        }
+      }
+      
+      var point = 1;
+      setInterval(function(){
+        drawNextPoint(point);
+        point += 1;
+      },10);
+      
+      function drawNextPoint(index) {    
+      if (index >= vm.points.length) {
+        return;
+      }
+        var startX = vm.points[index-1].x;
+        var startY = vm.points[index-1].y;
+        
+        var x = vm.points[index].x;
+        var y = vm.points[index].y;
+        
+        vm.context.beginPath();
+        vm.context.moveTo(startX, startY);
+        vm.context.lineTo(x, y);
+        vm.context.lineWidth = 1;
+        vm.context.lineCap = 'round';
+        vm.context.strokeStyle = "rgba(0,0,0,1)";
+        vm.context.stroke();
       }
     }
   },
@@ -144,13 +196,6 @@ export default {
   border-radius: 20px;
   border: 2px solid orange;
   cursor: crosshair;
-}
-
-#canvas:hover + .cursor {
-  opacity: 3;
-}
-#canvas:active + .cursor {
-  border-color: rgb(0, 0, 0);
 }
 
 .controls {
