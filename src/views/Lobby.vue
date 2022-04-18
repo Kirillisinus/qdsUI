@@ -81,6 +81,7 @@ export default {
   /*position: relative;*/
   display: inline-block;
   margin-bottom: 20px;
+  cursor: pointer;
 }
 .back:after {
   /*position: absolute;*/

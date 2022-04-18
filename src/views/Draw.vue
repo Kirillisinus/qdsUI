@@ -6,15 +6,16 @@
       <baseTimer class="base-timer" />
     </div>
     <div class="middle">
-      <canvas ref="canvas" id="canvas">Обновите браузер!</canvas>
+      <div id="palette"></div>
+      <canvas id="canvas" @mousemove="drawIfPressed">Обновите браузер!</canvas>
       <div class="controls">
         <div class="btn-row">
-          <button type="button" v-on:click="clear" class="back">Clear</button>
+          <button type="button" @click="clear" class="back">Clear</button>
         </div>
         -
 
         <div class="btn-row">
-          <div class="palette back"></div>
+          
         </div>
 
         <div class="btn-row">
@@ -55,116 +56,59 @@ export default {
       sizes: [6, 12, 24, 48],
       canvas: null,
       context: null,
-      isDrawing: false,
-      startX: 0,
-      startY: 0,
-      points: [],
     };
   },
   computed: {},
   mounted() {
-    var vm = this
-    vm.canvas=vm.$refs.canvas;
-    vm.context=vm.canvas.getContext("2d");
-    vm.canvas.addEventListener('mousedown',vm.mousedown);
-    vm.canvas.addEventListener('mousemove',vm.mousemove)
-    document.addEventListener('mouseup',vm.mouseup);
-    /*var canvas = document.getElementById("canvas");
-    var context = canvas.getContext("2d");
-    context.lineCap = "round";
-    context.lineWidth = 8;*/
-  },
-  methods: {
-    mousedown(e){
-      var vm = this
-      var rect = vm.canvas.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      
-      vm.isDrawing = true;
-      vm.startX = x;
-      vm.startY = y;
-      vm.points.push({
-        x: x,
-        y: y
-      });
-    },
-    mousemove(e){
-      var vm = this
-      var rect = vm.canvas.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      
-      if (vm.isDrawing) {
-        vm.context.beginPath();
-        vm.context.moveTo(vm.startX, vm.startY);
-        vm.context.lineTo(x, y);
-        vm.context.lineWidth = 1;
-        vm.context.lineCap = 'round';
-        vm.context.strokeStyle = "rgba(0,0,0,1)";
-        vm.context.stroke();
-        
-        vm.startX = x;
-        vm.startY = y;  
-        
-        vm.points.push({
-          x: x,
-          y: y
-        });
-      }
-    },
-    mouseup(e){
-      var vm = this
-      vm.isDrawing = false;
-      if (vm.points.length > 0) {
-        localStorage['points'] = JSON.stringify(vm.points);    
-      }
-    },
-    resetCanvas(){
-      var vm = this
-      vm.canvas.width = vm.canvas.width;
-      vm.points.length = 0; // reset points array
-    },
-    saveImage(){
-      var vm = this
-      var dataURL = vm.canvas.toDataURL();
-      var img = vm.$refs.img;
-      img.src = dataURL;
-    },
-    replay(){
-      var vm = this
-      vm.canvas.width = vm.canvas.width;
-      
-      // load localStorage
-      if (vm.points.length === 0) {
-        if (localStorage["points"] !== undefined) {
-          vm.points = JSON.parse(localStorage["points"]);
+    this.canvas = document.getElementById("canvas");
+    this.context = canvas.getContext("2d");
+    this.context.lineCap = "round";
+    this.context.lineWidth = 8;
+
+    var palette=document.getElementById("palette");
+
+    for (var r = 0, max = 4; r <= max; r++) {
+        for (var g = 0; g <= max; g++) {
+          for (var b = 0; b <= max; b++) {
+            var paletteBlock = document.createElement('div');
+            paletteBlock.className = 'color';
+            paletteBlock.addEventListener('click', function changeColor(e) {
+              this.context.strokeStyle = e.target.style.backgroundColor;
+            });
+ 
+            paletteBlock.style.backgroundColor = (
+              'rgb(' + Math.round(r * 255 / max) + ", "
+              + Math.round(g * 255 / max) + ", "
+              + Math.round(b * 255 / max) + ")"
+            );
+ 
+            palette.appendChild(paletteBlock);
+          }
         }
       }
-      
-      var point = 1;
-      setInterval(function(){
-        drawNextPoint(point);
-        point += 1;
-      },10);
-      
-      function drawNextPoint(index) {    
-      if (index >= vm.points.length) {
-        return;
-      }
-        var startX = vm.points[index-1].x;
-        var startY = vm.points[index-1].y;
-        
-        var x = vm.points[index].x;
-        var y = vm.points[index].y;
-        
-        vm.context.beginPath();
-        vm.context.moveTo(startX, startY);
-        vm.context.lineTo(x, y);
-        vm.context.lineWidth = 1;
-        vm.context.lineCap = 'round';
-        vm.context.strokeStyle = "rgba(0,0,0,1)";
-        vm.context.stroke();
+  },
+  created() {
+    
+  },
+  methods: {
+    clear() {
+      this.context.clearRect(0, 0, canvas.width, canvas.height);
+    },
+    drawIfPressed (e) {
+      // в "e"  попадает экземпляр MouseEvent
+      var x = e.offsetX;
+      var y = e.offsetY;
+      var dx = e.movementX;
+      var dy = e.movementY;
+ 
+      // Проверяем зажата ли какая-нибудь кнопка мыши
+      // Если да, то рисуем
+      if (e.buttons > 0) {
+        this.context.beginPath();
+        this.context.moveTo(x, y);
+        this.context.lineTo(x - dx, y - dy);
+        this.context.stroke();
+        this.context.closePath();
       }
     }
   },
@@ -174,6 +118,14 @@ export default {
 <style>
 @charset "utf-8";
 
+.color {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  padding: 1px;
+  cursor: pointer;
+  border: solid 1px #fff;
+}
 /*.cursor {
   position: fixed;
   top: 0;
@@ -190,8 +142,8 @@ export default {
 }*/
 
 #canvas {
-  width: 60vw;
-  height: 60vh;
+  width: 600px;
+  height: 600px;
   background-color: white;
   border-radius: 20px;
   border: 2px solid orange;
