@@ -20,12 +20,24 @@
         </div>
 
         <div class="btn-row">
-          <label v-for="sizeItem in sizes" class="size-item" v-bind:key="sizeItem">
-						<input type="radio" name="size" v-model="size" v-bind:value="sizeItem" class="size"
-									v-bind:style="{width: sizeItem + 10 +'px', height: sizeItem + 10 +'px'}"
-                  @change="setSize(sizeItem)"
-                  />                
-					</label>
+          <label
+            v-for="sizeItem in sizes"
+            class="size-item"
+            v-bind:key="sizeItem"
+          >
+            <input
+              type="radio"
+              name="size"
+              v-model="size"
+              v-bind:value="sizeItem"
+              class="size"
+              v-bind:style="{
+                width: sizeItem + 10 + 'px',
+                height: sizeItem + 10 + 'px',
+              }"
+              @change="setSize(sizeItem)"
+            />
+          </label>
         </div>
         <div class="btn-row"></div>
         <router-link class="write" to="/album">done</router-link>
@@ -84,7 +96,7 @@ export default {
     }
   },
   methods: {
-    setSize(s){
+    setSize(s) {
       this.context.lineWidth = s;
     },
     changeColor(e) {
@@ -162,26 +174,26 @@ export default {
   border-radius: 4px;
 }
 .size {
-		background-color: rgb(140, 140, 140);
-		display: inline-block;
-		border-radius: 50%;
-		transition: all .15s;
-		transform: translate(-50%, -50%) scale(.6);
-    position: absolute;
-		top: 50%;
-		left: 50%;
+  background-color: rgb(140, 140, 140);
+  display: inline-block;
+  border-radius: 50%;
+  transition: all 0.15s;
+  transform: translate(-50%, -50%) scale(0.6);
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
-		.size:hover {
-			opacity: .8;
-		}
-	.size-item {
-	width: 40px;
-	height: 60px;
-	display: inline-flex;
-	position: relative;
-	justify-content: center;
-	align-items: center;
-	vertical-align: top;
-	cursor: pointer;
-  }
+.size:hover {
+  opacity: 0.8;
+}
+.size-item {
+  width: 40px;
+  height: 60px;
+  display: inline-flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  vertical-align: top;
+  cursor: pointer;
+}
 </style>

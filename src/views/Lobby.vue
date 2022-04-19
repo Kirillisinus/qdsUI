@@ -48,7 +48,7 @@ export default {
       name: "",
     };
   },
-  async mounted() {
+  mounted() {
     if (localStorage.name) {
       this.name = localStorage.name;
     }

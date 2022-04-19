@@ -28,7 +28,7 @@ export default {
       name: (String = "Гость123123123"),
     };
   },
-  async mounted() {
+  mounted() {
     if (localStorage.name) {
       this.name = localStorage.name;
     }

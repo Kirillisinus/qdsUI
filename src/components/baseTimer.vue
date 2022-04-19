@@ -32,6 +32,9 @@ export default {
         ease: Power0.easeNone,
       });
     },
+    stop() {
+      TweenMax.pauseAll();
+    },
     complete() {
       alert("Finish");
     },
@@ -46,11 +49,10 @@ export default {
         `L 0 0`,
       ].join(" ");
       return pathData;
-    },
-    nowTime() {
-      var vm = this;
-      return Math.ceil(vm.time - vm.time * vm.currentPercent);
-    },
+    }
+  },
+  beforeUnmount() {
+
   },
   mounted() {
     setTimeout(() => {
@@ -60,7 +62,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .timer {
   position: relative;
   height: 3em;
