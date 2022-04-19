@@ -7,34 +7,25 @@
     </div>
     <div class="middle">
       <div id="palette"></div>
-      <canvas id="canvas" @mousemove="drawIfPressed">Обновите браузер!</canvas>
+      <canvas
+        id="canvas"
+        @mousemove="drawIfPressed($event)"
+        height="500"
+        width="900"
+        >Обновите браузер!</canvas
+      >
       <div class="controls">
         <div class="btn-row">
           <button type="button" @click="clear" class="back">Clear</button>
         </div>
-        -
 
         <div class="btn-row">
-          
-        </div>
-
-        <div class="btn-row">
-          <label
-            v-for="sizeItem in sizes"
-            class="size-item"
-            v-bind:key="sizeItem"
-          >
-            <input
-              type="radio"
-              name="size"
-              v-model="size"
-              v-bind:value="sizeItem"
-            />
-            <span
-              class="size"
-              v-bind:style="{ width: sizeItem + 'px', height: sizeItem + 'px' }"
-            ></span>
-          </label>
+          <label v-for="sizeItem in sizes" class="size-item" v-bind:key="sizeItem">
+						<input type="radio" name="size" v-model="size" v-bind:value="sizeItem" class="size"
+									v-bind:style="{width: sizeItem + 10 +'px', height: sizeItem + 10 +'px'}"
+                  @change="setSize(sizeItem)"
+                  />                
+					</label>
         </div>
         <div class="btn-row"></div>
         <router-link class="write" to="/album">done</router-link>
@@ -56,61 +47,70 @@ export default {
       sizes: [6, 12, 24, 48],
       canvas: null,
       context: null,
+      colors: [
+        "#13f7ab",
+        "#13f3f7",
+        "#13c5f7",
+        "#138cf7",
+        "#1353f7",
+        "#2d13f7",
+        "#7513f7",
+        "#a713f7",
+        "#d413f7",
+        "#f713e0",
+        "#f71397",
+        "#f7135b",
+        "#f71313",
+        "#f76213",
+        "#f79413",
+        "#f7e013",
+      ],
     };
   },
-  computed: {},
   mounted() {
     this.canvas = document.getElementById("canvas");
-    this.context = canvas.getContext("2d");
+    this.context = this.canvas.getContext("2d");
     this.context.lineCap = "round";
-    this.context.lineWidth = 8;
+    this.context.lineWidth = this.size;
 
-    var palette=document.getElementById("palette");
+    var palette = document.getElementById("palette");
 
-    for (var r = 0, max = 4; r <= max; r++) {
-        for (var g = 0; g <= max; g++) {
-          for (var b = 0; b <= max; b++) {
-            var paletteBlock = document.createElement('div');
-            paletteBlock.className = 'color';
-            paletteBlock.addEventListener('click', function changeColor(e) {
-              this.context.strokeStyle = e.target.style.backgroundColor;
-            });
- 
-            paletteBlock.style.backgroundColor = (
-              'rgb(' + Math.round(r * 255 / max) + ", "
-              + Math.round(g * 255 / max) + ", "
-              + Math.round(b * 255 / max) + ")"
-            );
- 
-            palette.appendChild(paletteBlock);
-          }
-        }
-      }
-  },
-  created() {
-    
+    for (var r = 0, max = this.colors.length; r < max; r++) {
+      var paletteBlock = document.createElement("div");
+      paletteBlock.className = "color";
+      paletteBlock.addEventListener("click", this.changeColor);
+      paletteBlock.style.backgroundColor = this.colors[r];
+      palette.appendChild(paletteBlock);
+    }
   },
   methods: {
+    setSize(s){
+      this.context.lineWidth = s;
+    },
+    changeColor(e) {
+      this.context.strokeStyle = e.target.style.backgroundColor;
+    },
     clear() {
       this.context.clearRect(0, 0, canvas.width, canvas.height);
     },
-    drawIfPressed (e) {
+    drawIfPressed(e) {
       // в "e"  попадает экземпляр MouseEvent
       var x = e.offsetX;
       var y = e.offsetY;
       var dx = e.movementX;
       var dy = e.movementY;
- 
+
       // Проверяем зажата ли какая-нибудь кнопка мыши
       // Если да, то рисуем
       if (e.buttons > 0) {
         this.context.beginPath();
         this.context.moveTo(x, y);
         this.context.lineTo(x - dx, y - dy);
+        //debugger;
         this.context.stroke();
         this.context.closePath();
       }
-    }
+    },
   },
 };
 </script>
@@ -126,26 +126,18 @@ export default {
   cursor: pointer;
   border: solid 1px #fff;
 }
-/*.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 3px solid rgb(30, 30, 30);
-  pointer-events: none;
-  user-select: none;
-  mix-blend-mode: difference;
-  opacity: 0;
-  transition: opacity 1s;
-}*/
+.color:hover {
+  border: solid 1px #f00;
+}
+
+.color:active {
+  border: solid 1px #ff0;
+}
 
 #canvas {
-  width: 600px;
-  height: 600px;
+  /*width: 600px;
+  height: 600px;*/
   background-color: white;
-  border-radius: 20px;
   border: 2px solid orange;
   cursor: crosshair;
 }
@@ -169,4 +161,27 @@ export default {
   padding: 0 15px;
   border-radius: 4px;
 }
+.size {
+		background-color: rgb(140, 140, 140);
+		display: inline-block;
+		border-radius: 50%;
+		transition: all .15s;
+		transform: translate(-50%, -50%) scale(.6);
+    position: absolute;
+		top: 50%;
+		left: 50%;
+}
+		.size:hover {
+			opacity: .8;
+		}
+	.size-item {
+	width: 40px;
+	height: 60px;
+	display: inline-flex;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+	vertical-align: top;
+	cursor: pointer;
+  }
 </style>

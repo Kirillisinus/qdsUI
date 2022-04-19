@@ -80,7 +80,7 @@ export default {
   transition: all 0.3s ease;
   /*position: relative;*/
   display: inline-block;
-  margin-bottom: 20px;
+  /*margin-bottom: 20px;*/
   cursor: pointer;
 }
 .back:after {
