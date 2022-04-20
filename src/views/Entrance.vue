@@ -1,16 +1,19 @@
 <template>
+<Loader id="load"></Loader>
   <div class="entrance">
     <div id="header">
       <img src="../images/logo_transparent.png" alt="logo" id="logo" />
     </div>
+    
     <span class="invite">Представьтесь, пожалуйста </span>
+    <span class="wrong-name">Name has already taken</span>
     <input
       type="text"
       class="input-name"
       placeholder="Гость123123123"
       v-model="name"
     />
-    <router-link class="button continue" @click="saveName" to="/lobby">
+    <router-link class="button continue" @click="saveName" to="#">
       <div>Продолжить как {{ name }}</div>
       <i class="icon-arrow-right"></i>
     </router-link>
@@ -22,7 +25,12 @@
 </template>
 
 <script>
+import axios from 'axios'
+import Loader from '../components/loader.vue'
 export default {
+  components: {
+    Loader
+  },
   data() {
     return {
       name: (String = "Гость123123123"),
@@ -34,14 +42,37 @@ export default {
     }
   },
   methods: {
-    saveName() {
+    async saveName() {
+      let loader = document.getElementById('load');
+      let body = document.getElementsByClassName('entrance')[0];
+      body.style.display='none';
+      loader.style.display='block';
+      let url = "http://localhost:3000/login/"+this.name;
+      let resp="notok";
+      await axios.get(url).then(response=>{resp=response.data.result; loader.style.display='none';body.style.display='flex';});
+      
+      if(resp!="ok") {
+        let warn = document.getElementsByClassName('wrong-name')[0];
+        let input = document.getElementsByClassName('input-name')[0];
+
+        warn.style.display="inline-block";
+        input.style.border="1px solid red";
+        return;
+      }
       localStorage.name = this.name;
+      this.$router.push('/lobby');
     },
   },
 };
 </script>
 
 <style>
+#load {
+  display: none;
+  position: absolute;
+  top:50%;
+  left:50%;
+}
 #logo {
   display: block;
   margin: auto;
@@ -56,6 +87,12 @@ export default {
 }
 
 .invite {
+  font-size: 1.8em;
+}
+
+.wrong-name {
+  display:none;
+  color:red;
   font-size: 1.8em;
 }
 
