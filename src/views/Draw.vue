@@ -3,7 +3,7 @@
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <baseTimer class="base-timer" />
+      <baseTimer class="base-timer"></baseTimer>
     </div>
     <div class="middle">
       <div id="palette"></div>
@@ -40,7 +40,7 @@
           </label>
         </div>
         <div class="btn-row"></div>
-        <router-link class="write" to="/album">done</router-link>
+        <router-link class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
     <div class="down"></div>
@@ -80,6 +80,8 @@ export default {
     };
   },
   mounted() {
+    this.$forceUpdate();
+  
     this.canvas = document.getElementById("canvas");
     this.context = this.canvas.getContext("2d");
     this.context.lineCap = "round";
@@ -96,6 +98,10 @@ export default {
     }
   },
   methods: {
+    done() {
+      TweenMax.pauseAll();
+      this.$router.push('/album');
+    },
     setSize(s) {
       this.context.lineWidth = s;
     },

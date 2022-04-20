@@ -2,7 +2,7 @@
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <!--<baseTimer class="base-timer"/>-->
+      <baseTimer class="base-timer"></baseTimer>
     </div>
     <div class="middle">
       <div class="middle-logo">
@@ -14,25 +14,31 @@
       <div class="input-sentence">
         <div class="input">
           <input class="sentence" type="text" />
-          <!--<router-link class="write" to="/draw" @click="stop">done</router-link>-->
-          <button class="write" @click="done">done</button>
+          <router-link class="write" to="#" @click="done">done</router-link>
         </div>
       </div>
     </div>
 </template>
 
 <script>
+import baseTimer from "../components/baseTimer.vue";
 export default {
   data() {
     return {
     };
   },
+  components: {
+    baseTimer
+  },
   methods: {
     done() {
-      //TweenMax.pauseAll();
-      //this.$router.push('/draw');
+      TweenMax.pauseAll();
+      this.$router.push('/draw');
     }
   },
+  mounted() {
+    this.$forceUpdate();
+  }
 };
 </script>
 
