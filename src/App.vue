@@ -6,7 +6,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  created() {
+    this.socket = io("http://localhost:3000");
+  },
+};
 </script>
 
 <style>

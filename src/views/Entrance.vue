@@ -49,6 +49,8 @@ export default {
       loader.style.display='block';
       let url = "http://localhost:3000/login/"+this.name;
       let resp="notok";
+      
+      this.socket.emit('msgToServer', this.name);
       await axios.get(url).then(response=>{resp=response.data.result; loader.style.display='none';body.style.display='flex';});
       
       if(resp!="ok") {
