@@ -7,8 +7,13 @@
 
 <script>
 export default {
+  data() {
+    return {
+      socket: 2
+    }
+  },
   created() {
-    const socket = io("http://localhost:3000");
+    this.socket = io("https://qds-serv.herokuapp.com/");
   },
 };
 </script>
