@@ -1,12 +1,12 @@
 <template>
-  <div class="write-sentence">
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <baseTimer class="base-timer"/>
+      <baseTimer class="base-timer"></baseTimer>
     </div>
     <div class="middle">
       <div class="middle-logo">
+
         <img src="../images/pen.png" alt="logo" class="mid-logo" />
         <div class="card">Write a sentence</div>
       </div>
@@ -14,26 +14,31 @@
       <div class="input-sentence">
         <div class="input">
           <input class="sentence" type="text" />
-          <router-link class="write" to="/draw">done</router-link>
+          <router-link class="write" to="#" @click="done">done</router-link>
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
 import baseTimer from "../components/baseTimer.vue";
 export default {
-  components: {
-    baseTimer,
-  },
   data() {
     return {
-      
     };
   },
-  methods: {
+  components: {
+    baseTimer
   },
+  methods: {
+    done() {
+      TweenMax.pauseAll();
+      this.$router.push('/draw');
+    }
+  },
+  mounted() {
+    this.$forceUpdate();
+  }
 };
 </script>
 
@@ -73,7 +78,7 @@ export default {
 .card {
   margin-top: 0.5em;
   text-transform: uppercase;
-  font-size: 10vh;
+  font-size: 8vh;
   margin-bottom: 10px;
 }
 .input {

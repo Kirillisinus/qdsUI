@@ -3,25 +3,20 @@
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <baseTimer class="base-timer"/>
+      <baseTimer class="base-timer"></baseTimer>
     </div>
     <div class="middle">
-      <canvas id="canvas">Обновите браузер</canvas>
-      <div class="cursor" id="cursor"></div>
+      <div id="palette"></div>
+      <canvas
+        id="canvas"
+        @mousemove="drawIfPressed($event)"
+        height="500"
+        width="900"
+        >Обновите браузер!</canvas
+      >
       <div class="controls">
-        <!--<div class="btn-row">
-          <button type="button"
-								v-on:click="removeHistoryItem"
-								v-bind:class="{ disabled: !history.length }" title="Undo"> <i class="ion ion-reply"></i>remove </button>
-        </div>
         <div class="btn-row">
-          <button type="button"
-								v-on:click="removeAllHistory"
-								v-bind:class="{ disabled: !history.length }" title="Clear all"> <i class="ion ion-trash-a"></i>delete </button>
-        </div>-->
-
-        <div class="btn-row">
-          <input type="color" class="palette-input" />
+          <button type="button" @click="clear" class="back">Clear</button>
         </div>
 
         <div class="btn-row">
@@ -35,15 +30,17 @@
               name="size"
               v-model="size"
               v-bind:value="sizeItem"
-            />
-            <span
               class="size"
-              v-bind:style="{ width: sizeItem + 'px', height: sizeItem + 'px' }"
-            ></span>
+              v-bind:style="{
+                width: sizeItem + 10 + 'px',
+                height: sizeItem + 10 + 'px',
+              }"
+              @change="setSize(sizeItem)"
+            />
           </label>
         </div>
         <div class="btn-row"></div>
-        <router-link class="write" to="/album">done</router-link>
+        <router-link class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
     <div class="down"></div>
@@ -60,46 +57,107 @@ export default {
     return {
       size: 12,
       sizes: [6, 12, 24, 48],
+      canvas: null,
+      context: null,
+      colors: [
+        "#13f7ab",
+        "#13f3f7",
+        "#13c5f7",
+        "#138cf7",
+        "#1353f7",
+        "#2d13f7",
+        "#7513f7",
+        "#a713f7",
+        "#d413f7",
+        "#f713e0",
+        "#f71397",
+        "#f7135b",
+        "#f71313",
+        "#f76213",
+        "#f79413",
+        "#f7e013",
+      ],
     };
   },
-  computed: {},
+  mounted() {
+    this.$forceUpdate();
+  
+    this.canvas = document.getElementById("canvas");
+    this.context = this.canvas.getContext("2d");
+    this.context.lineCap = "round";
+    this.context.lineWidth = this.size;
+
+    var palette = document.getElementById("palette");
+
+    for (var r = 0, max = this.colors.length; r < max; r++) {
+      var paletteBlock = document.createElement("div");
+      paletteBlock.className = "color";
+      paletteBlock.addEventListener("click", this.changeColor);
+      paletteBlock.style.backgroundColor = this.colors[r];
+      palette.appendChild(paletteBlock);
+    }
+  },
   methods: {
-  }
+    done() {
+      TweenMax.pauseAll();
+      this.$router.push('/album');
+    },
+    setSize(s) {
+      this.context.lineWidth = s;
+    },
+    changeColor(e) {
+      this.context.strokeStyle = e.target.style.backgroundColor;
+    },
+    clear() {
+      this.context.clearRect(0, 0, canvas.width, canvas.height);
+    },
+    drawIfPressed(e) {
+      // в "e"  попадает экземпляр MouseEvent
+      var x = e.offsetX;
+      var y = e.offsetY;
+      var dx = e.movementX;
+      var dy = e.movementY;
+
+      // Проверяем зажата ли какая-нибудь кнопка мыши
+      // Если да, то рисуем
+      if (e.buttons > 0) {
+        this.context.beginPath();
+        this.context.moveTo(x, y);
+        this.context.lineTo(x - dx, y - dy);
+        //debugger;
+        this.context.stroke();
+        this.context.closePath();
+      }
+    },
+  },
 };
 </script>
 
 <style>
 @charset "utf-8";
 
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 3px solid rgb(30, 30, 30);
-  pointer-events: none;
-  user-select: none;
-  mix-blend-mode: difference;
-  opacity: 0;
-  transition: opacity 1s;
+.color {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  padding: 1px;
+  cursor: pointer;
+  border: solid 1px #fff;
+}
+.color:hover {
+  border: solid 1px #f00;
+}
+
+.color:active {
+  border: solid 1px #ff0;
 }
 
 #canvas {
-  width: 60vw;
-  height: 60vh;
+  /*width: 600px;
+  height: 600px;*/
   background-color: white;
-  cursor: none;
-  border-radius: 20px;
   border: 2px solid orange;
-}
-
-#canvas:hover + .cursor {
-  opacity: 3;
-}
-#canvas:active + .cursor {
-  border-color: rgb(0, 0, 0);
+  cursor: crosshair;
 }
 
 .controls {
@@ -120,5 +178,28 @@ export default {
   flex-wrap: wrap;
   padding: 0 15px;
   border-radius: 4px;
+}
+.size {
+  background-color: rgb(140, 140, 140);
+  display: inline-block;
+  border-radius: 50%;
+  transition: all 0.15s;
+  transform: translate(-50%, -50%) scale(0.6);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.size:hover {
+  opacity: 0.8;
+}
+.size-item {
+  width: 40px;
+  height: 60px;
+  display: inline-flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  vertical-align: top;
+  cursor: pointer;
 }
 </style>

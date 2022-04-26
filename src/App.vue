@@ -6,7 +6,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      socket: 2
+    }
+  },
+  created() {
+    this.socket = io("https://qds-serv.herokuapp.com/");
+  },
+};
 </script>
 
 <style>
