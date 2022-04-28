@@ -47,10 +47,9 @@ export default {
       let body = document.getElementsByClassName('entrance')[0];
       body.style.display='none';
       loader.style.display='block';
-      let url = "https://qds-serv.herokuapp.com/login/"+this.name;
+      let url = "http://localhost:3000/login/"+this.name;
       let resp="notok";
       
-      this.$root.socket.emit('msgToServer', this.name);
       await axios.get(url).then(response=>{resp=response.data.result; loader.style.display='none';body.style.display='flex';});
       
       if(resp!="ok") {

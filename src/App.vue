@@ -13,7 +13,7 @@ export default {
     }
   },
   created() {
-    this.socket = io("https://qds-serv.herokuapp.com/");
+    this.socket = io("http://localhost:3000/");
   },
 };
 </script>

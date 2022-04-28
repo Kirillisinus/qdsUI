@@ -45,13 +45,13 @@
 export default {
   data() {
     return {
-      name: "",
+      name: localStorage.name,
     };
   },
   mounted() {
-    if (localStorage.name) {
-      this.name = localStorage.name;
-    }
+  },
+  created() {
+      this.$root.socket.emit('enterLobby', this.name);
   },
   methods: {},
 };
