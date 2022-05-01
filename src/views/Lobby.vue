@@ -21,7 +21,11 @@
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>-->
-          <div class="player" v-for="(lobb, index) in lobbys" :key="index">
+          <div
+            class="player"
+            v-for="(lobb, index) in lobbys.slice(0, 1)"
+            :key="index"
+          >
             {{ lobb.user }}
           </div>
         </section>
