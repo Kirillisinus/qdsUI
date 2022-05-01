@@ -6,9 +6,10 @@
   <div class="lobby">
     <div class="room">
       <div class="right-side">
-        <div class="count-players">Players 1/16</div>
+        <div class="count-players">Players {{ lobbys.length + 1 }}/16</div>
         <section class="players">
           <div class="player">{{ name }}</div>
+          <!--<div class="empty">Empty</div>
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>
@@ -19,8 +20,10 @@
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
+          <div class="empty">Empty</div>-->
+          <div class="player" v-for="(lobb, index) in lobbys" :key="index">
+            {{ lobb.user }}
+          </div>
         </section>
       </div>
       <section class="game-settings">
@@ -42,18 +45,42 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
       name: localStorage.name,
+      lobbys: [],
     };
   },
   mounted() {
+    this.$root.socket.emit("enterLobby", this.name);
+
+    axios.get("http://localhost:3000/players").then((response) => {
+      this.lobbys = response.data;
+    });
+
+    var gamers = document.getElementById("gamers");
+
+    for (var r = 0, max = this.lobbys.length; r < max; r++) {
+      var gamerBlock = document.createElement("div");
+      gamerBlock.id = "gamer";
+      gamerBlock.className = "player";
+      gamerBlock.innerHTML = lobbys[r].user;
+      gamers.appendChild(gamerBlock);
+    }
   },
-  created() {
-      this.$root.socket.emit('enterLobby', this.name);
+  created() {},
+  methods: {
+    /*async reqPlayers() {
+      await axios.get("http://localhost:3000/players").then((response) => {
+        this.lobbys = response.data;
+      });
+      
+      
+    },*/
   },
-  methods: {},
 };
 </script>
 
