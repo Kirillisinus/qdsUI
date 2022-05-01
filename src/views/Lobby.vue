@@ -61,29 +61,30 @@ export default {
   mounted() {
     this.$root.socket.emit("enterLobby", this.name);
 
-    axios.get("http://localhost:3000/players").then((response) => {
-      this.lobbys = response.data;
-    });
-
-    var gamers = document.getElementById("gamers");
-
-    for (var r = 0, max = this.lobbys.length; r < max; r++) {
-      var gamerBlock = document.createElement("div");
-      gamerBlock.id = "gamer";
-      gamerBlock.className = "player";
-      gamerBlock.innerHTML = lobbys[r].user;
-      gamers.appendChild(gamerBlock);
-    }
+    this.reqPlayers();
   },
-  created() {},
+  created() {
+    this.$root.socket.on("msg", (data) => {
+      this.reqPlayers();
+      this.lobbys.push(data);
+    });
+  },
   methods: {
-    /*async reqPlayers() {
-      await axios.get("http://localhost:3000/players").then((response) => {
+    reqPlayers() {
+      axios.get("http://localhost:3000/players").then((response) => {
         this.lobbys = response.data;
       });
-      
-      
-    },*/
+
+      var gamers = document.getElementById("gamers");
+
+      for (var r = 0, max = this.lobbys.length; r < max; r++) {
+        var gamerBlock = document.createElement("div");
+        gamerBlock.id = "gamer";
+        gamerBlock.className = "player";
+        gamerBlock.innerHTML = lobbys[r].user;
+        gamers.appendChild(gamerBlock);
+      }
+    },
   },
 };
 </script>
