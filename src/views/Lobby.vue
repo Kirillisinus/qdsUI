@@ -60,8 +60,16 @@ export default {
       this.reqPlayers();
     }, 1000);
 
-    this.$root.socket.on("msg", (data) => {
+    this.$root.socket.on("enterMsg", (data) => {
       this.lobbys.push(data);
+    });
+
+    this.$root.socket.on("exitMsg", (data) => {
+      this.reqPlayers();
+    });
+
+    this.$root.socket.on("startMsg", () => {
+      this.$router.push("/write");
     });
   },
   mounted() {
@@ -76,6 +84,16 @@ export default {
       axios.get("http://localhost:3000/players").then((response) => {
         this.lobbys = response.data;
       });
+    },
+
+    startGame() {
+      this.$root.socket.emit("startGame");
+
+      //this.$router.push("/write");
+    },
+
+    goBack() {
+      this.$router.push("/");
     },
   },
 };
