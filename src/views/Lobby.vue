@@ -1,15 +1,15 @@
 <template>
   <div class="btn-back">
-    <router-link class="back" to="/"> Назад </router-link>
+    <router-link class="back" to="#" @click="goBack"> Назад </router-link>
     <img src="../images/logo_transparent.png" alt="logo" id="logo-lobby" />
   </div>
   <div class="lobby">
     <div class="room">
       <div class="right-side">
-        <div class="count-players">Players {{ lobbys.length + 1 }}/16</div>
+        <div class="count-players">Players {{ lobbys.length }}/16</div>
         <section class="players">
-          <div class="player">{{ name }}</div>
-          <!--<div class="empty">Empty</div>
+          <!--<div class="player">{{ name }}</div>
+          <div class="empty">Empty</div>
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>
@@ -21,11 +21,7 @@
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>
           <div class="empty">Empty</div>-->
-          <div
-            class="player"
-            v-for="(lobb, index) in lobbys.slice(0, 1)"
-            :key="index"
-          >
+          <div class="player" v-for="(lobb, index) in lobbys" :key="index">
             {{ lobb.user }}
           </div>
         </section>
@@ -34,7 +30,7 @@
         <div class="settings-text">Custom settings</div>
         <div class="settings"></div>
         <div class="start-game">
-          <router-link class="button start-btn" to="/write">
+          <router-link class="button start-btn" to="#" @click="startGame">
             <div>Начать</div>
             <i class="icon-arrow-right"></i>
           </router-link>
@@ -58,32 +54,28 @@ export default {
       lobbys: [],
     };
   },
-  mounted() {
+  beforeMount() {
     this.$root.socket.emit("enterLobby", this.name);
-
-    this.reqPlayers();
-  },
-  created() {
-    this.$root.socket.on("msg", (data) => {
+    setTimeout(() => {
       this.reqPlayers();
+    }, 1000);
+
+    this.$root.socket.on("msg", (data) => {
       this.lobbys.push(data);
     });
+  },
+  mounted() {
+    this.$forceUpdate();
+  },
+  created() {},
+  beforeUnmount() {
+    this.$root.socket.emit("exitLobby", this.name);
   },
   methods: {
     reqPlayers() {
       axios.get("http://localhost:3000/players").then((response) => {
         this.lobbys = response.data;
       });
-
-      var gamers = document.getElementById("gamers");
-
-      for (var r = 0, max = this.lobbys.length; r < max; r++) {
-        var gamerBlock = document.createElement("div");
-        gamerBlock.id = "gamer";
-        gamerBlock.className = "player";
-        gamerBlock.innerHTML = lobbys[r].user;
-        gamers.appendChild(gamerBlock);
-      }
     },
   },
 };

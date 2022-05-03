@@ -9,8 +9,8 @@
 export default {
   data() {
     return {
-      socket: 2
-    }
+      socket: 2,
+    };
   },
   created() {
     this.socket = io("http://localhost:3000/");
