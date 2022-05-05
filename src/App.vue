@@ -16,7 +16,7 @@ export default {
     };
   },
   created() {
-    this.socket = io("http://localhost:3000/");
+    this.socket = io("https://qds-serv.herokuapp.com/");
   },
   errorHandler (err, vm, info) {
     alert(`Error: ${err.toString()}\nInfo: ${info}`);
