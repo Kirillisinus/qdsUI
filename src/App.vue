@@ -24,7 +24,7 @@ export default {
   errorCaptured(err,vm,info) {
     
     if(info === "render function") {
-      //alert(`cat EC: ${err.toString()}\ninfo: ${info}`); 
+      alert(`cat EC: ${err.toString()}\ninfo: ${info}`); 
       //setTimeout(() => {
       window.location.reload();
       //}, 50);
