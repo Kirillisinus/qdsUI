@@ -1,10 +1,10 @@
 <template>
-<Loader id="load"></Loader>
+  <Loader id="load"></Loader>
   <div class="entrance">
     <div id="header">
       <img src="../images/logo_transparent.png" alt="logo" id="logo" />
     </div>
-    
+
     <span class="invite">Представьтесь, пожалуйста </span>
     <span class="wrong-name">Name has already taken</span>
     <input
@@ -25,11 +25,11 @@
 </template>
 
 <script>
-import axios from 'axios'
-import Loader from '../components/loader.vue'
+import axios from "axios";
+import Loader from "../components/loader.vue";
 export default {
   components: {
-    Loader
+    Loader,
   },
   data() {
     return {
@@ -43,26 +43,32 @@ export default {
   },
   methods: {
     async saveName() {
-      let loader = document.getElementById('load');
-      let body = document.getElementsByClassName('entrance')[0];
-      body.style.display='none';
-      loader.style.display='block';
-      let url = "https://qds-serv.herokuapp.com/login/"+this.name;
-      let resp="notok";
-      
-      this.$root.socket.emit('msgToServer', this.name);
-      await axios.get(url).then(response=>{resp=response.data.result; loader.style.display='none';body.style.display='flex';});
-      
-      if(resp!="ok") {
-        let warn = document.getElementsByClassName('wrong-name')[0];
-        let input = document.getElementsByClassName('input-name')[0];
+      let loader = document.getElementById("load");
+      let body = document.getElementsByClassName("entrance")[0];
+      /*let content = document.getElementById("conent");
+      content.style.border = "none";*/
+      body.style.display = "none";
+      loader.style.display = "block";
+      let url = "http://localhost:3000/login/" + this.name;
+      let resp = "notok";
 
-        warn.style.display="inline-block";
-        input.style.border="1px solid red";
+      await axios.get(url).then((response) => {
+        resp = response.data.result;
+        loader.style.display = "none";
+        body.style.display = "flex";
+        //content.style.border = "border: 4px #f5d731f1 solid";
+      });
+
+      if (resp != "ok") {
+        let warn = document.getElementsByClassName("wrong-name")[0];
+        let input = document.getElementsByClassName("input-name")[0];
+
+        warn.style.display = "inline-block";
+        input.style.border = "1px solid red";
         return;
       }
       localStorage.name = this.name;
-      this.$router.push('/lobby');
+      this.$router.push("/lobby");
     },
   },
 };
@@ -72,8 +78,8 @@ export default {
 #load {
   display: none;
   position: absolute;
-  top:50%;
-  left:50%;
+  top: 50%;
+  left: 50%;
 }
 #logo {
   display: block;
@@ -93,8 +99,8 @@ export default {
 }
 
 .wrong-name {
-  display:none;
-  color:red;
+  display: none;
+  color: red;
   font-size: 1.8em;
 }
 

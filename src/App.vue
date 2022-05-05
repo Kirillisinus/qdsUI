@@ -1,4 +1,5 @@
 <template>
+<slot></slot>
   <div id="content">
     <router-view />
   </div>
@@ -6,15 +7,31 @@
 </template>
 
 <script>
+import { Vue } from 'vue'
+
 export default {
   data() {
     return {
-      socket: 2
-    }
+      socket: 2,
+    };
   },
   created() {
-    this.socket = io("https://qds-serv.herokuapp.com/");
+    this.socket = io("http://localhost:3000/");
   },
+  errorHandler (err, vm, info) {
+    alert(`Error: ${err.toString()}\nInfo: ${info}`);
+  },
+  errorCaptured(err,vm,info) {
+    
+    if(info === "render function") {
+      //alert(`cat EC: ${err.toString()}\ninfo: ${info}`); 
+      //setTimeout(() => {
+      window.location.reload();
+      //}, 50);
+    }
+
+    return false;
+  }
 };
 </script>
 

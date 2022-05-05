@@ -2,7 +2,7 @@
     <div class="up">
       <div class="rounds">1/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <baseTimer class="base-timer"></baseTimer>
+      <baseTimer id= "timer" class="base-timer"></baseTimer>
     </div>
     <div class="middle">
       <div class="middle-logo">
@@ -33,6 +33,11 @@ export default {
   methods: {
     done() {
       TweenMax.pauseAll();
+      let timer = document.getElementById("timer");
+      timer.style.display='none';
+
+      
+
       this.$router.push('/draw');
     }
   },

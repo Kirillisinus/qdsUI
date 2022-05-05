@@ -36,7 +36,7 @@ export default {
       TweenMax.pauseAll();
     },
     complete() {
-      alert("Finish");
+      //alert("Finish");
     },
   },
   computed: {

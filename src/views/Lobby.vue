@@ -1,33 +1,29 @@
 <template>
   <div class="btn-back">
-    <router-link class="back" to="/"> Назад </router-link>
+    <router-link class="back" to="#" @click="goBack"> Назад </router-link>
     <img src="../images/logo_transparent.png" alt="logo" id="logo-lobby" />
   </div>
   <div class="lobby">
     <div class="room">
       <div class="right-side">
-        <div class="count-players">Players 1/16</div>
+        <div class="count-players">
+          Players {{ this.$store.getters.getNumPlayers }}/16
+        </div>
         <section class="players">
-          <div class="player">{{ name }}</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
+          <div
+            class="player"
+            v-for="(lobb, index) in this.$store.getters.getPlayers"
+            :key="index"
+          >
+            {{ lobb.user }}
+          </div>
         </section>
       </div>
       <section class="game-settings">
         <div class="settings-text">Custom settings</div>
         <div class="settings"></div>
         <div class="start-game">
-          <router-link class="button start-btn" to="/write">
+          <router-link class="button start-btn" to="#" @click="startGame">
             <div>Начать</div>
             <i class="icon-arrow-right"></i>
           </router-link>
@@ -42,18 +38,66 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      name: "",
+      name: localStorage.name,
+      lobbys: this.$store.getters.getPlayers,
     };
   },
-  mounted() {
-    if (localStorage.name) {
-      this.name = localStorage.name;
-    }
+  beforeMount() {
+    this.$root.socket.emit("enterLobby", this.name);
+    setTimeout(() => {
+      //this.reqPlayers();
+      //this.$store.dispatch('reqPlayers');
+    }, 1000);
+
+    this.$root.socket.on("enterMsg", (data) => {
+      //this.lobbys.push(data);
+      setTimeout(() => {
+        this.$store.dispatch("reqPlayers");
+      }, 1000);
+    });
+
+    this.$root.socket.on("exitMsg", (data) => {
+      //this.reqPlayers();
+      setTimeout(() => {
+        this.$store.dispatch("reqPlayers");
+      }, 1000);
+    });
+
+    this.$root.socket.on("startMsg", () => {
+      this.$router.push("/write");
+    });
   },
-  methods: {},
+  mounted() {
+    this.$forceUpdate();
+  },
+  created() {},
+  beforeUnmount() {
+    this.$root.socket.emit("exitLobby", this.name);
+  },
+  methods: {
+    /*reqPlayers() {
+      axios.get("http://localhost:3000/players").then((response) => {
+        this.lobbys = response.data;
+      });
+    },*/
+
+    startGame() {
+      this.$root.socket.emit("startGame");
+
+      //this.$router.push("/write");
+    },
+
+    goBack() {
+      this.$router.push("/");
+    },
+  },
+  //computed: mapGetters(["getNumPlayers"]),
 };
 </script>
 
