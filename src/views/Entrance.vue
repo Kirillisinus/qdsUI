@@ -49,7 +49,7 @@ export default {
       content.style.border = "none";*/
       body.style.display = "none";
       loader.style.display = "block";
-      let url = "http://localhost:3000/login/" + this.name;
+      let url = "https://qds-serv.herokuapp.com/login/" + this.name;
       let resp = "notok";
 
       await axios.get(url).then((response) => {
