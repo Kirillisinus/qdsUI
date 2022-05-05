@@ -6,22 +6,15 @@
   <div class="lobby">
     <div class="room">
       <div class="right-side">
-        <div class="count-players">Players {{ lobbys.length }}/16</div>
+        <div class="count-players">
+          Players {{ this.$store.getters.getNumPlayers }}/16
+        </div>
         <section class="players">
-          <!--<div class="player">{{ name }}</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>-->
-          <div class="player" v-for="(lobb, index) in lobbys" :key="index">
+          <div
+            class="player"
+            v-for="(lobb, index) in this.$store.getters.getPlayers"
+            :key="index"
+          >
             {{ lobb.user }}
           </div>
         </section>
@@ -46,26 +39,34 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
     return {
       name: localStorage.name,
-      lobbys: [],
+      lobbys: this.$store.getters.getPlayers,
     };
   },
   beforeMount() {
     this.$root.socket.emit("enterLobby", this.name);
     setTimeout(() => {
-      this.reqPlayers();
+      //this.reqPlayers();
+      //this.$store.dispatch('reqPlayers');
     }, 1000);
 
     this.$root.socket.on("enterMsg", (data) => {
-      this.lobbys.push(data);
+      //this.lobbys.push(data);
+      setTimeout(() => {
+        this.$store.dispatch("reqPlayers");
+      }, 1000);
     });
 
     this.$root.socket.on("exitMsg", (data) => {
-      this.reqPlayers();
+      //this.reqPlayers();
+      setTimeout(() => {
+        this.$store.dispatch("reqPlayers");
+      }, 1000);
     });
 
     this.$root.socket.on("startMsg", () => {
@@ -80,11 +81,11 @@ export default {
     this.$root.socket.emit("exitLobby", this.name);
   },
   methods: {
-    reqPlayers() {
+    /*reqPlayers() {
       axios.get("http://localhost:3000/players").then((response) => {
         this.lobbys = response.data;
       });
-    },
+    },*/
 
     startGame() {
       this.$root.socket.emit("startGame");
@@ -96,6 +97,7 @@ export default {
       this.$router.push("/");
     },
   },
+  //computed: mapGetters(["getNumPlayers"]),
 };
 </script>
 
