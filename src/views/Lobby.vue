@@ -7,12 +7,12 @@
     <div class="room">
       <div class="right-side">
         <div class="count-players">
-          Players {{ this.$store.getters.getNumPlayers }}/16
+          Players {{ getNumPlayers }}/16
         </div>
         <section class="players">
           <div
             class="player"
-            v-for="(lobb, index) in this.$store.getters.getPlayers"
+            v-for="(lobb, index) in getPlayers"
             :key="index"
           >
             {{ lobb.user }}
@@ -49,12 +49,12 @@ export default {
     };
   },
   beforeMount() {
-    this.$root.socket.emit("enterLobby", this.name);
-    setTimeout(() => {
-      //this.reqPlayers();
-      //this.$store.dispatch('reqPlayers');
-    }, 1000);
 
+  },
+  mounted() {
+    
+  },
+  created() {
     this.$root.socket.on("enterMsg", (data) => {
       //this.lobbys.push(data);
       setTimeout(() => {
@@ -64,19 +64,17 @@ export default {
 
     this.$root.socket.on("exitMsg", (data) => {
       //this.reqPlayers();
-      setTimeout(() => {
+      //setTimeout(() => {
         this.$store.dispatch("reqPlayers");
-      }, 1000);
+      //}, 1000);
     });
 
     this.$root.socket.on("startMsg", () => {
       this.$router.push("/write");
     });
+
+    this.$root.socket.emit("enterLobby", this.name);
   },
-  mounted() {
-    this.$forceUpdate();
-  },
-  created() {},
   beforeUnmount() {
     this.$root.socket.emit("exitLobby", this.name);
   },
@@ -97,7 +95,9 @@ export default {
       this.$router.push("/");
     },
   },
-  //computed: mapGetters(["getNumPlayers"]),
+  computed: {
+    ...mapGetters(["getNumPlayers","getPlayers"])
+  },
 };
 </script>
 

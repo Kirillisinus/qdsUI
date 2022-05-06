@@ -24,7 +24,7 @@ export default createStore({
   },
   actions: {
     async reqPlayers(ctx) {
-      axios.get("https://qds-serv.herokuapp.com/players").then((response) => {
+      await axios.get("https://qds-serv.herokuapp.com/players").then((response) => {
         ctx.commit('updatePlayers',response.data)
         //this.state.lobbys = response.data;
       });
