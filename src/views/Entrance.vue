@@ -6,7 +6,7 @@
     </div>
 
     <span class="invite">Представьтесь, пожалуйста </span>
-    <span class="wrong-name">Name has already taken</span>
+    <span class="wrong-name">Имя уже используется, придумайте другое!</span>
     <input
       type="text"
       class="input-name"

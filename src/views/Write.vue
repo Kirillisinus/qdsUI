@@ -1,49 +1,45 @@
 <template>
-    <div class="up">
-      <div class="rounds">1/16</div>
-      <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <baseTimer id= "timer" class="base-timer"></baseTimer>
+  <div class="up">
+    <div class="rounds">1/16</div>
+    <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
+    <baseTimer id="timer" class="base-timer"></baseTimer>
+  </div>
+  <div class="middle">
+    <div class="middle-logo">
+      <img src="../images/pen.png" alt="logo" class="mid-logo" />
+      <div class="card">Write a sentence</div>
     </div>
-    <div class="middle">
-      <div class="middle-logo">
 
-        <img src="../images/pen.png" alt="logo" class="mid-logo" />
-        <div class="card">Write a sentence</div>
-      </div>
-      
-      <div class="input-sentence">
-        <div class="input">
-          <input class="sentence" type="text" />
-          <router-link class="write" to="#" @click="done">done</router-link>
-        </div>
+    <div class="input-sentence">
+      <div class="input">
+        <input class="sentence" type="text" />
+        <router-link class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
 import baseTimer from "../components/baseTimer.vue";
 export default {
   data() {
-    return {
-    };
+    return {};
   },
   components: {
-    baseTimer
+    baseTimer,
   },
   methods: {
     done() {
       TweenMax.pauseAll();
       let timer = document.getElementById("timer");
-      timer.style.display='none';
+      timer.style.display = "none";
 
-      
-
-      this.$router.push('/draw');
-    }
+      this.$router.push("/draw");
+    },
   },
   mounted() {
     this.$forceUpdate();
-  }
+  },
 };
 </script>
 

@@ -6,15 +6,9 @@
   <div class="lobby">
     <div class="room">
       <div class="right-side">
-        <div class="count-players">
-          Players {{ this.$store.getters.getNumPlayers }}/16
-        </div>
+        <div class="count-players">Players {{ getNumPlayers }}/16</div>
         <section class="players">
-          <div
-            class="player"
-            v-for="(lobb, index) in this.$store.getters.getPlayers"
-            :key="index"
-          >
+          <div class="player" v-for="(lobb, index) in getPlayers" :key="index">
             {{ lobb.user }}
           </div>
         </section>
@@ -45,59 +39,46 @@ export default {
   data() {
     return {
       name: localStorage.name,
-      lobbys: this.$store.getters.getPlayers,
     };
   },
-  beforeMount() {
-    this.$root.socket.emit("enterLobby", this.name);
-    setTimeout(() => {
-      //this.reqPlayers();
-      //this.$store.dispatch('reqPlayers');
-    }, 1000);
-
+  beforeMount() {},
+  mounted() {
+    this.$forceUpdate();
+  },
+  created() {
     this.$root.socket.on("enterMsg", (data) => {
-      //this.lobbys.push(data);
       setTimeout(() => {
         this.$store.dispatch("reqPlayers");
       }, 1000);
     });
-
     this.$root.socket.on("exitMsg", (data) => {
-      //this.reqPlayers();
-      setTimeout(() => {
-        this.$store.dispatch("reqPlayers");
-      }, 1000);
+      this.$store.dispatch("reqPlayers");
+    });
+    this.$root.socket.on("startMsg", () => {
+      this.$router.push("/write");
     });
 
     this.$root.socket.on("startMsg", () => {
       this.$router.push("/write");
     });
+
+    this.$root.socket.emit("enterLobby", this.name);
   },
-  mounted() {
-    this.$forceUpdate();
-  },
-  created() {},
   beforeUnmount() {
     this.$root.socket.emit("exitLobby", this.name);
   },
   methods: {
-    /*reqPlayers() {
-      axios.get("http://localhost:3000/players").then((response) => {
-        this.lobbys = response.data;
-      });
-    },*/
-
     startGame() {
       this.$root.socket.emit("startGame");
-
-      //this.$router.push("/write");
     },
 
     goBack() {
       this.$router.push("/");
     },
   },
-  //computed: mapGetters(["getNumPlayers"]),
+  computed: {
+    ...mapGetters(["getNumPlayers", "getPlayers"]),
+  },
 };
 </script>
 

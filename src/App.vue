@@ -1,5 +1,5 @@
 <template>
-<slot></slot>
+  <slot></slot>
   <div id="content">
     <router-view />
   </div>
@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { Vue } from 'vue'
+import { Vue } from "vue";
 
 export default {
   data() {
@@ -18,20 +18,19 @@ export default {
   created() {
     this.socket = io("http://localhost:3000/");
   },
-  errorHandler (err, vm, info) {
+  errorHandler(err, vm, info) {
     alert(`Error: ${err.toString()}\nInfo: ${info}`);
   },
-  errorCaptured(err,vm,info) {
-    
-    if(info === "render function") {
-      //alert(`cat EC: ${err.toString()}\ninfo: ${info}`); 
+  errorCaptured(err, vm, info) {
+    if (info === "render function") {
+      //alert(`cat EC: ${err.toString()}\ninfo: ${info}`);
       //setTimeout(() => {
       window.location.reload();
       //}, 50);
     }
 
     return false;
-  }
+  },
 };
 </script>
 
@@ -48,7 +47,7 @@ body {
 }
 
 #content {
-  margin: 30px 2em;
+  margin: 1em 1em;
   padding: 20px;
   border: solid black;
   border-color: #ffaf3b;
