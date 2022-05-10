@@ -1,33 +1,29 @@
 <template>
   <div class="btn-back">
-    <router-link class="back" to="/"> Назад </router-link>
+    <router-link class="back" to="#" @click="goBack"> Назад </router-link>
     <img src="../images/logo_transparent.png" alt="logo" id="logo-lobby" />
   </div>
   <div class="lobby">
     <div class="room">
       <div class="right-side">
-        <div class="count-players">Players 1/16</div>
+        <div class="count-players">Players {{ getNumPlayers }}/16</div>
         <section class="players">
-          <div class="player">{{ name }}</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
-          <div class="empty">Empty</div>
+          <div
+            id="plyr"
+            class="player"
+            v-for="(lobb, index) in getPlayers"
+            :key="index"
+          >
+            {{ lobb.user }}
+            <div class="adm-sign"></div>
+          </div>
         </section>
       </div>
       <section class="game-settings">
         <div class="settings-text">Custom settings</div>
         <div class="settings"></div>
         <div class="start-game">
-          <router-link class="button start-btn" to="/write">
+          <router-link class="button start-btn" to="#" @click="startGame">
             <div>Начать</div>
             <i class="icon-arrow-right"></i>
           </router-link>
@@ -42,18 +38,78 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      name: "",
+      name: localStorage.name,
+      admin: "",
     };
   },
-  mounted() {
-    if (localStorage.name) {
-      this.name = localStorage.name;
-    }
+  watch: {
+    admin() {
+      setTimeout(() => {
+        this.updateAdminDiv();
+      }, 1000);
+    },
   },
-  methods: {},
+  beforeMount() {},
+  mounted() {
+    this.$forceUpdate();
+  },
+  created() {
+    this.$root.socket.on("enterMsg", (...args) => {
+      this.admin = args;
+
+      setTimeout(() => {
+        this.$store.dispatch("reqPlayers");
+      }, 500);
+    });
+    this.$root.socket.on("exitMsg", () => {
+      this.$store.dispatch("reqPlayers");
+    });
+    this.$root.socket.on("startMsg", () => {
+      this.$router.push("/write");
+    });
+
+    this.$root.socket.on("startMsg", () => {
+      this.$router.push("/write");
+    });
+
+    this.$root.socket.emit("enterLobby", this.name);
+  },
+  beforeUnmount() {
+    this.$root.socket.emit("exitLobby", this.name);
+  },
+  methods: {
+    startGame() {
+      this.$root.socket.emit("startGame", localStorage.name);
+    },
+
+    goBack() {
+      this.$router.push("/");
+    },
+    async updateAdminDiv() {
+      let adms = document.getElementsByClassName("player");
+      for (let i = 0; i < adms.length; i++) {
+        let arg1 = adms[i].textContent;
+        let arg2 = this.admin[0];
+
+        if (arg1.trim() === arg2) {
+          adms[i].childNodes[1].style.display = "block";
+        }
+      }
+
+      /*if (adms.length <= 1) {
+        adm.childNodes[1].style.display = "block";
+      }*/
+    },
+  },
+  computed: {
+    ...mapGetters(["getNumPlayers", "getPlayers"]),
+  },
 };
 </script>
 
@@ -132,6 +188,9 @@ export default {
   margin-top: 10px;
 }
 .player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   border: 2px solid black;
   background-color: #bfedcd;
   width: 100%;
@@ -169,5 +228,13 @@ export default {
 }
 .start-btn {
   margin-right: 2em;
+}
+.adm-sign {
+  display: none;
+  width: 0;
+  height: 0;
+  border-width: 20px 10px 5px;
+  border-style: solid;
+  border-color: #e95557 #e95557 transparent;
 }
 </style>

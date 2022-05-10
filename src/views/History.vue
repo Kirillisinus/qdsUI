@@ -3,9 +3,10 @@
     <router-link class="back" to="/"> home </router-link>
     <div class="room">
       <section class="players">
-        <div class="count-players">Players 1/16</div>
-        <div class="player">{{ name }}</div>
-        <div class="empty">Empty</div>
+        <div class="count-players">Players {{ getNumPlayers }}/16</div>
+        <div class="player" v-for="(lobb, index) in getPlayers" :key="index">
+          {{ lobb.user }}
+        </div>
       </section>
       <section class="album">
         <div class="album-name">album</div>
@@ -23,18 +24,23 @@
 </template>
 
 <script >
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
       name: "",
     };
   },
-  async mounted() {
+  mounted() {
     if (localStorage.name) {
       this.name = localStorage.name;
     }
   },
   methods: {},
+  computed: {
+    ...mapGetters(["getNumPlayers", "getPlayers"]),
+  },
 };
 </script>
 

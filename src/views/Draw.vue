@@ -5,7 +5,9 @@
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer class="base-timer"></baseTimer>
     </div>
-    <div class="middle">
+    <div class="call-draw">Попробуй нарисовать!</div>
+    <div class="prev-sentence">Lorem ipsum</div>
+    <div class="middle-draw">
       <div id="palette"></div>
       <canvas
         id="canvas"
@@ -14,6 +16,8 @@
         width="900"
         >Обновите браузер!</canvas
       >
+    </div>
+    <div class="down">
       <div class="controls">
         <div class="btn-row">
           <button type="button" @click="clear" class="back">Clear</button>
@@ -43,7 +47,6 @@
         <router-link class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
-    <div class="down"></div>
   </div>
 </template>
 
@@ -60,6 +63,8 @@ export default {
       canvas: null,
       context: null,
       colors: [
+        "#ffffff",
+        "#000000",
         "#13f7ab",
         "#13f3f7",
         "#13c5f7",
@@ -81,7 +86,7 @@ export default {
   },
   mounted() {
     this.$forceUpdate();
-  
+
     this.canvas = document.getElementById("canvas");
     this.context = this.canvas.getContext("2d");
     this.context.lineCap = "round";
@@ -97,10 +102,13 @@ export default {
       palette.appendChild(paletteBlock);
     }
   },
+  beforeUnmount() {
+    TweenMax.pauseAll();
+  },
   methods: {
     done() {
       TweenMax.pauseAll();
-      this.$router.push('/album');
+      this.$router.push("/album");
     },
     setSize(s) {
       this.context.lineWidth = s;
@@ -132,14 +140,14 @@ export default {
   },
 };
 </script>
-
 <style>
 @charset "utf-8";
 
 .color {
-  width: 15px;
-  height: 15px;
-  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  display: flex;
+  flex-direction: column;
   padding: 1px;
   cursor: pointer;
   border: solid 1px #fff;
@@ -152,9 +160,16 @@ export default {
   border: solid 1px #ff0;
 }
 
+.middle-draw {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 #canvas {
-  /*width: 600px;
-  height: 600px;*/
+  /*max-width: 80vw;
+  max-height: 80vh;*/
   background-color: white;
   border: 2px solid orange;
   cursor: crosshair;
@@ -167,7 +182,6 @@ export default {
   justify-content: center;
   align-items: center;
   user-select: none;
-  margin-top: 2em;
 }
 
 .btn-row {
@@ -201,5 +215,29 @@ export default {
   align-items: center;
   vertical-align: top;
   cursor: pointer;
+}
+.down {
+  margin-top: 1em;
+}
+
+.prev-sentence {
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 10px;
+  color: white;
+  text-shadow: -0 -2px 0 #000000, 0 -2px 0 #000000, -0 2px 0 #000000,
+    0 2px 0 #000000, -2px -0 0 #000000, 2px -0 0 #000000, -2px 0 0 #000000,
+    2px 0 0 #000000, -1px -2px 0 #000000, 1px -2px 0 #000000, -1px 2px 0 #000000,
+    1px 2px 0 #000000, -2px -1px 0 #000000, 2px -1px 0 #000000,
+    -2px 1px 0 #000000, 2px 1px 0 #000000, -2px -2px 0 #000000,
+    2px -2px 0 #000000, -2px 2px 0 #000000, 2px 2px 0 #000000,
+    -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000,
+    2px 2px 0 #000000;
+}
+.call-draw {
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  text-align: center;
 }
 </style>
