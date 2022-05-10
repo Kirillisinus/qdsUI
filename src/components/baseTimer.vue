@@ -36,7 +36,7 @@ export default {
       TweenMax.pauseAll();
     },
     complete() {
-      //alert("Finish");
+      this.$root.socket.emit("timeIsUp");
     },
   },
   computed: {
@@ -49,11 +49,9 @@ export default {
         `L 0 0`,
       ].join(" ");
       return pathData;
-    }
+    },
   },
-  beforeUnmount() {
-
-  },
+  beforeUnmount() {},
   mounted() {
     setTimeout(() => {
       this.start();

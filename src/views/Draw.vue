@@ -102,6 +102,9 @@ export default {
       palette.appendChild(paletteBlock);
     }
   },
+  beforeUnmount() {
+    TweenMax.pauseAll();
+  },
   methods: {
     done() {
       TweenMax.pauseAll();
@@ -137,7 +140,6 @@ export default {
   },
 };
 </script>
-
 <style>
 @charset "utf-8";
 

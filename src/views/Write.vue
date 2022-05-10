@@ -12,7 +12,7 @@
 
     <div class="input-sentence">
       <div class="input">
-        <input class="sentence" type="text" />
+        <input class="sentence" type="text" v-model="sentence" />
         <router-link class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
@@ -23,7 +23,9 @@
 import baseTimer from "../components/baseTimer.vue";
 export default {
   data() {
-    return {};
+    return {
+      sentence: "",
+    };
   },
   components: {
     baseTimer,
@@ -34,11 +36,19 @@ export default {
       let timer = document.getElementById("timer");
       timer.style.display = "none";
 
-      this.$router.push("/draw");
+      this.$root.socket.emit("writeSentence", this.sentence);
     },
+  },
+  created() {
+    this.$root.socket.on("goNextMsg", () => {
+      this.$router.push("/draw");
+    });
   },
   mounted() {
     this.$forceUpdate();
+  },
+  beforeUnmount() {
+    TweenMax.pauseAll();
   },
 };
 </script>
