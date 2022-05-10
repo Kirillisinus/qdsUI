@@ -48,8 +48,20 @@ export default {
       admin: "",
     };
   },
+<<<<<<< HEAD
   watch: {
     admin() {
+=======
+  beforeMount() {
+
+  },
+  mounted() {
+    
+  },
+  created() {
+    this.$root.socket.on("enterMsg", (data) => {
+      //this.lobbys.push(data);
+>>>>>>> 8cdafee46a65417a3eccb757c811ce03123158f5
       setTimeout(() => {
         this.updateAdminDiv();
       }, 1000);
@@ -63,6 +75,7 @@ export default {
     this.$root.socket.on("enterMsg", (...args) => {
       this.admin = args;
 
+<<<<<<< HEAD
       setTimeout(() => {
         this.$store.dispatch("reqPlayers");
       }, 500);
@@ -72,6 +85,13 @@ export default {
     });
     this.$root.socket.on("startMsg", () => {
       this.$router.push("/write");
+=======
+    this.$root.socket.on("exitMsg", (data) => {
+      //this.reqPlayers();
+      //setTimeout(() => {
+        this.$store.dispatch("reqPlayers");
+      //}, 1000);
+>>>>>>> 8cdafee46a65417a3eccb757c811ce03123158f5
     });
 
     this.$root.socket.on("startMsg", () => {
@@ -106,6 +126,12 @@ export default {
   computed: {
     ...mapGetters(["getNumPlayers", "getPlayers"]),
   },
+<<<<<<< HEAD
+=======
+  computed: {
+    ...mapGetters(["getNumPlayers","getPlayers"])
+  },
+>>>>>>> 8cdafee46a65417a3eccb757c811ce03123158f5
 };
 </script>
 

@@ -16,7 +16,7 @@ export default {
     };
   },
   created() {
-    this.socket = io("http://localhost:3000/");
+    this.socket = io("https://qds-serv.herokuapp.com/");
   },
   errorHandler(err, vm, info) {
     alert(`Error: ${err.toString()}\nInfo: ${info}`);
@@ -24,9 +24,9 @@ export default {
   errorCaptured(err, vm, info) {
     if (info === "render function") {
       //alert(`cat EC: ${err.toString()}\ninfo: ${info}`);
-      //setTimeout(() => {
-      window.location.reload();
-      //}, 50);
+      setTimeout(() => {
+        window.location.reload();
+      }, 50);
     }
 
     return false;
