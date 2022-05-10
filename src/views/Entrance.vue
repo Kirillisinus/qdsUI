@@ -68,6 +68,7 @@ export default {
         return;
       }
       localStorage.name = this.name;
+
       this.$router.push("/lobby");
     },
   },

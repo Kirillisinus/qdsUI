@@ -25,6 +25,7 @@ export default {
   data() {
     return {
       sentence: "",
+      ready: false,
     };
   },
   components: {
@@ -32,6 +33,7 @@ export default {
   },
   methods: {
     done() {
+      this.ready = true;
       TweenMax.pauseAll();
       let timer = document.getElementById("timer");
       timer.style.display = "none";
@@ -40,8 +42,11 @@ export default {
     },
   },
   created() {
-    this.$root.socket.on("goNextMsg", () => {
-      this.$router.push("/draw");
+    this.$root.socket.on("goNextMsg", (...args) => {
+      if (!this.ready) {
+        this.$root.socket.emit("writeSentence", this.sentence);
+      }
+      this.$router.push("/" + args);
     });
   },
   mounted() {

@@ -8,8 +8,14 @@
       <div class="right-side">
         <div class="count-players">Players {{ getNumPlayers }}/16</div>
         <section class="players">
-          <div class="player" v-for="(lobb, index) in getPlayers" :key="index">
+          <div
+            id="plyr"
+            class="player"
+            v-for="(lobb, index) in getPlayers"
+            :key="index"
+          >
             {{ lobb.user }}
+            <div class="adm-sign"></div>
           </div>
         </section>
       </div>
@@ -39,19 +45,29 @@ export default {
   data() {
     return {
       name: localStorage.name,
+      admin: "",
     };
+  },
+  watch: {
+    admin() {
+      setTimeout(() => {
+        this.updateAdminDiv();
+      }, 1000);
+    },
   },
   beforeMount() {},
   mounted() {
     this.$forceUpdate();
   },
   created() {
-    this.$root.socket.on("enterMsg", (data) => {
+    this.$root.socket.on("enterMsg", (...args) => {
+      this.admin = args;
+
       setTimeout(() => {
         this.$store.dispatch("reqPlayers");
-      }, 1000);
+      }, 500);
     });
-    this.$root.socket.on("exitMsg", (data) => {
+    this.$root.socket.on("exitMsg", () => {
       this.$store.dispatch("reqPlayers");
     });
     this.$root.socket.on("startMsg", () => {
@@ -69,11 +85,26 @@ export default {
   },
   methods: {
     startGame() {
-      this.$root.socket.emit("startGame");
+      this.$root.socket.emit("startGame", localStorage.name);
     },
 
     goBack() {
       this.$router.push("/");
+    },
+    async updateAdminDiv() {
+      let adms = document.getElementsByClassName("player");
+      for (let i = 0; i < adms.length; i++) {
+        let arg1 = adms[i].textContent;
+        let arg2 = this.admin[0];
+
+        if (arg1.trim() === arg2) {
+          adms[i].childNodes[1].style.display = "block";
+        }
+      }
+
+      /*if (adms.length <= 1) {
+        adm.childNodes[1].style.display = "block";
+      }*/
     },
   },
   computed: {
@@ -157,6 +188,9 @@ export default {
   margin-top: 10px;
 }
 .player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   border: 2px solid black;
   background-color: #bfedcd;
   width: 100%;
@@ -194,5 +228,13 @@ export default {
 }
 .start-btn {
   margin-right: 2em;
+}
+.adm-sign {
+  display: none;
+  width: 0;
+  height: 0;
+  border-width: 20px 10px 5px;
+  border-style: solid;
+  border-color: #e95557 #e95557 transparent;
 }
 </style>

@@ -4,7 +4,8 @@ import axios from "axios";
 export default createStore({
   state: {
     TIME_LIMIT:120,
-    lobbys: []
+    lobbys: [],
+    admin_name:"",
   },
   getters: {
     getTimeLimit(state){
@@ -15,11 +16,17 @@ export default createStore({
     },
     getNumPlayers(state) {
       return state.lobbys.length;
+    },
+    getAdminName(state){
+      return state.admin_name;
     }
   },
   mutations: {
     updatePlayers(state, players) {
       state.lobbys=players;
+    },
+    updateAdmin(state, admin){
+      state.admin_name=admin;
     }
   },
   actions: {
