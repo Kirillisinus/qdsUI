@@ -101,10 +101,6 @@ export default {
           adms[i].childNodes[1].style.display = "block";
         }
       }
-
-      /*if (adms.length <= 1) {
-        adm.childNodes[1].style.display = "block";
-      }*/
     },
   },
   computed: {
@@ -134,13 +130,10 @@ export default {
   border: 2px solid orange;
   background: transparent;
   transition: all 0.3s ease;
-  /*position: relative;*/
   display: inline-block;
-  /*margin-bottom: 20px;*/
   cursor: pointer;
 }
 .back:after {
-  /*position: absolute;*/
   content: " ";
   top: 0;
   left: 0;
