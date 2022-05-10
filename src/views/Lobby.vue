@@ -48,15 +48,8 @@ export default {
       admin: "",
     };
   },
-  beforeMount() {
-
-  },
-  mounted() {
-    
-  },
-  created() {
-    this.$root.socket.on("enterMsg", (data) => {
-      //this.lobbys.push(data);
+  watch: {
+    admin() {
       setTimeout(() => {
         this.updateAdminDiv();
       }, 1000);
@@ -113,9 +106,6 @@ export default {
   computed: {
     ...mapGetters(["getNumPlayers", "getPlayers"]),
   },
-  computed: {
-    ...mapGetters(["getNumPlayers","getPlayers"])
-  },
 };
 </script>
 
@@ -140,10 +130,13 @@ export default {
   border: 2px solid orange;
   background: transparent;
   transition: all 0.3s ease;
+  /*position: relative;*/
   display: inline-block;
+  /*margin-bottom: 20px;*/
   cursor: pointer;
 }
 .back:after {
+  /*position: absolute;*/
   content: " ";
   top: 0;
   left: 0;
