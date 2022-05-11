@@ -1,7 +1,7 @@
 <template>
   <div class="draw-image">
     <div class="up">
-      <div class="rounds">1/16</div>
+      <div class="rounds">{{ getNumRounds }}/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer class="base-timer"></baseTimer>
     </div>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import baseTimer from "../components/baseTimer.vue";
 export default {
   components: {
@@ -83,6 +84,17 @@ export default {
         "#f7e013",
       ],
     };
+  },
+  created() {
+    this.$root.socket.on("goNextMsg", (...args) => {
+      if (!this.ready) {
+        this.$root.socket.emit("drawImage", this.sentence);
+      }
+
+      this.$store.dispatch("setTimeLimit", args[0].round_time);
+
+      this.$router.push("/" + args[0].next_page);
+    });
   },
   mounted() {
     this.$forceUpdate();
@@ -137,6 +149,9 @@ export default {
         this.context.closePath();
       }
     },
+  },
+  computed: {
+    ...mapGetters(["getNumRounds"]),
   },
 };
 </script>
