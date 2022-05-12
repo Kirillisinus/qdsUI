@@ -1,8 +1,8 @@
 {
-  "name": "test-vuejs-app",
-  "version": "1.0.0",
-  "description": "Heroku App",
-  "author": "Kirill",
+  "name": "vuejs-app",
+  "version": "0.1.0",
+  "description": "Heroku My App",
+  "author": "Kirillisimus",
   "private": true,
   "scripts": {
     "postinstall": "npm install express"
