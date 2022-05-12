@@ -68,7 +68,12 @@ export default {
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
       this.$router.push("/" + args[0].next_page);
-    });
+    }),
+      this.$root.socket.on("timeIsUp", () => {
+        this.ready = true;
+
+        this.$root.socket.emit("writeSentence", this.sentence);
+      });
   },
   mounted() {
     this.$forceUpdate();
