@@ -44,11 +44,16 @@ export default {
   methods: {
     async saveName() {
       let loader = document.getElementById("load");
+
       let body = document.getElementsByClassName("entrance")[0];
-      /*let content = document.getElementById("conent");
-      content.style.border = "none";*/
+
+      let content = document.getElementById("content");
+      content.style.border = "none";
+
       body.style.display = "none";
+
       loader.style.display = "block";
+
       let url = "http://localhost:3000/login/" + this.name;
       let resp = "notok";
 
@@ -56,7 +61,7 @@ export default {
         resp = response.data.result;
         loader.style.display = "none";
         body.style.display = "flex";
-        //content.style.border = "border: 4px #f5d731f1 solid";
+        content.style.border = "4px #f5d731f1 solid";
       });
 
       if (resp != "ok") {

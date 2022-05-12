@@ -1,4 +1,5 @@
 <template>
+<div class="lobby-view">
   <div class="btn-back">
     <router-link class="back" to="#" @click="goBack"> Назад </router-link>
     <img src="../images/logo_transparent.png" alt="logo" id="logo-lobby" />
@@ -35,6 +36,7 @@
       </section>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -45,7 +47,7 @@ export default {
   data() {
     return {
       name: localStorage.name,
-      admin: "",
+      admin: localStorage.name,
     };
   },
   watch: {
@@ -63,9 +65,7 @@ export default {
     this.$root.socket.on("enterMsg", (...args) => {
       this.admin = args;
 
-      setTimeout(() => {
-        this.$store.dispatch("reqPlayers");
-      }, 500);
+      this.$store.dispatch("reqPlayers");
     });
 
     this.$root.socket.on("exitMsg", () => {
@@ -74,7 +74,7 @@ export default {
 
     this.$root.socket.on("startMsg", (...args) => {
       //alert("this is args from serv: " + args);
-      this.$store.dispatch("setTimeLimit",args);
+      this.$store.dispatch("setTimeLimit", args);
       this.$router.push("/write");
     });
 
@@ -92,7 +92,7 @@ export default {
     goBack() {
       this.$router.push("/");
     },
-    async updateAdminDiv() {
+    updateAdminDiv() {
       let adms = document.getElementsByClassName("player");
       for (let i = 0; i < adms.length; i++) {
         let arg1 = adms[i].textContent;
