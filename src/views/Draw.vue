@@ -1,9 +1,15 @@
 <template>
   <div class="draw-image">
     <div class="up">
-      <div class="rounds">1/16</div>
+      <div class="rounds">{{ getNumRounds }}/16</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-      <baseTimer class="base-timer"></baseTimer>
+      <baseTimer id="timer" class="base-timer"></baseTimer>
+      <img
+        src="../images/check.png"
+        alt="ready"
+        class="ready-icon"
+        id="rdy-i"
+      />
     </div>
     <div class="call-draw">Попробуй нарисовать!</div>
     <div class="prev-sentence">Lorem ipsum</div>
@@ -44,13 +50,14 @@
           </label>
         </div>
         <div class="btn-row"></div>
-        <router-link class="write" to="#" @click="done">done</router-link>
+        <router-link id="d-bt" class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import baseTimer from "../components/baseTimer.vue";
 export default {
   components: {
@@ -58,6 +65,7 @@ export default {
   },
   data() {
     return {
+      ready:false,
       size: 12,
       sizes: [6, 12, 24, 48],
       canvas: null,
@@ -84,6 +92,17 @@ export default {
       ],
     };
   },
+  created() {
+    this.$root.socket.on("goNextMsg", (...args) => {
+      if (!this.ready) {
+        this.$root.socket.emit("drawImage", this.sentence);
+      }
+
+      this.$store.dispatch("setTimeLimit", args[0].round_time);
+
+      this.$router.push("/" + args[0].next_page);
+    });
+  },
   mounted() {
     this.$forceUpdate();
 
@@ -107,8 +126,19 @@ export default {
   },
   methods: {
     done() {
+      document.getElementById("rdy-i").style.display = "block";
+      let d_btn = document.getElementById("d-bt");
+      d_btn.style.backgroundColor = "gray";
+
       TweenMax.pauseAll();
-      this.$router.push("/album");
+      let timer = document.getElementById("timer");
+      timer.style.display = "none";
+
+      if (!this.ready) {
+        this.$root.socket.emit("drawImage");
+      }
+
+      this.ready = true;
     },
     setSize(s) {
       this.context.lineWidth = s;
@@ -137,6 +167,9 @@ export default {
         this.context.closePath();
       }
     },
+  },
+  computed: {
+    ...mapGetters(["getNumRounds"]),
   },
 };
 </script>

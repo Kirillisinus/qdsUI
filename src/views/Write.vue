@@ -1,25 +1,36 @@
 <template>
-  <div class="up">
-    <div class="rounds">1/16</div>
-    <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
-    <baseTimer id="timer" class="base-timer"></baseTimer>
-  </div>
-  <div class="middle">
-    <div class="middle-logo">
-      <img src="../images/pen.png" alt="logo" class="mid-logo" />
-      <div class="card">Write a sentence</div>
+  <div class="write-player-sentence">
+    <div class="up">
+      <div class="rounds">{{ getNumRounds }}/16</div>
+      <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
+      <baseTimer id="timer" class="base-timer"></baseTimer>
+      <img
+        src="../images/check.png"
+        alt="ready"
+        class="ready-icon"
+        id="rdy-i"
+      />
     </div>
+    <div class="middle">
+      <div class="middle-logo">
+        <img src="../images/pen.png" alt="logo" class="mid-logo" />
+        <div class="card">Write a sentence</div>
+      </div>
 
-    <div class="input-sentence">
-      <div class="input">
-        <input class="sentence" type="text" v-model="sentence" />
-        <router-link class="write" to="#" @click="done">done</router-link>
+      <div class="input-sentence">
+        <div class="input">
+          <input class="sentence" type="text" v-model="sentence" />
+          <router-link id="wr-bt" class="write" to="#" @click="done"
+            >done</router-link
+          >
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import baseTimer from "../components/baseTimer.vue";
 export default {
   data() {
@@ -33,12 +44,19 @@ export default {
   },
   methods: {
     done() {
-      this.ready = true;
+      document.getElementById("rdy-i").style.display = "block";
+      let w_btn = document.getElementById("wr-bt");
+      w_btn.style.backgroundColor = "gray";
+
       TweenMax.pauseAll();
       let timer = document.getElementById("timer");
       timer.style.display = "none";
 
-      this.$root.socket.emit("writeSentence", this.sentence);
+      if (!this.ready) {
+        this.$root.socket.emit("writeSentence", this.sentence);
+      }
+
+      this.ready = true;
     },
   },
   created() {
@@ -46,14 +64,25 @@ export default {
       if (!this.ready) {
         this.$root.socket.emit("writeSentence", this.sentence);
       }
-      this.$router.push("/" + args);
-    });
+
+      this.$store.dispatch("setTimeLimit", args[0].round_time);
+
+      this.$router.push("/" + args[0].next_page);
+    }),
+      this.$root.socket.on("timeIsUp", () => {
+        this.ready = true;
+
+        this.$root.socket.emit("writeSentence", this.sentence);
+      });
   },
   mounted() {
     this.$forceUpdate();
   },
   beforeUnmount() {
     TweenMax.pauseAll();
+  },
+  computed: {
+    ...mapGetters(["getNumRounds"]),
   },
 };
 </script>
@@ -133,5 +162,10 @@ export default {
 .write:active {
   box-shadow: 0px 4px 8px rgba(darken(dodgerblue, 30%));
   transform: scale(0.98);
+}
+.ready-icon {
+  display: none;
+  height: 3em;
+  width: 3em;
 }
 </style>

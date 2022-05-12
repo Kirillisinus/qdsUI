@@ -1,5 +1,5 @@
 <template>
-  <div class="timer">
+  <div id="tim" class="timer">
     <svg viewBox="-1 -1 2 2" class="timer__svg donut">
       <circle cx="0" cy="0" r="1" fill="#dddddd" />
       <path :d="calc" :fill="color"></path>
@@ -36,7 +36,8 @@ export default {
       TweenMax.pauseAll();
     },
     complete() {
-      this.$root.socket.emit("timeIsUp");
+      document.getElementById("tim").style.display = "none";
+      //this.$root.socket.emit("timeIsUp");
     },
   },
   computed: {

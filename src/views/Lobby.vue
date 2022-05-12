@@ -1,4 +1,5 @@
 <template>
+<div class="lobby-view">
   <div class="btn-back">
     <router-link class="back" to="#" @click="goBack"> Назад </router-link>
     <img src="../images/logo_transparent.png" alt="logo" id="logo-lobby" />
@@ -35,6 +36,7 @@
       </section>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -63,18 +65,18 @@ export default {
     this.$root.socket.on("enterMsg", (...args) => {
       this.admin = args;
 
-      setTimeout(() => {
-        this.$store.dispatch("reqPlayers");
-      }, 500);
+      /*setTimeout(() => {*/
+      this.$store.dispatch("reqPlayers");
+      /*}, 20);*/
     });
+
     this.$root.socket.on("exitMsg", () => {
       this.$store.dispatch("reqPlayers");
     });
-    this.$root.socket.on("startMsg", () => {
-      this.$router.push("/write");
-    });
 
-    this.$root.socket.on("startMsg", () => {
+    this.$root.socket.on("startMsg", (...args) => {
+      //alert("this is args from serv: " + args);
+      this.$store.dispatch("setTimeLimit", args);
       this.$router.push("/write");
     });
 
@@ -85,13 +87,14 @@ export default {
   },
   methods: {
     startGame() {
+      this.$store.dispatch("setRounds");
       this.$root.socket.emit("startGame", localStorage.name);
     },
 
     goBack() {
       this.$router.push("/");
     },
-    async updateAdminDiv() {
+    updateAdminDiv() {
       let adms = document.getElementsByClassName("player");
       for (let i = 0; i < adms.length; i++) {
         let arg1 = adms[i].textContent;
