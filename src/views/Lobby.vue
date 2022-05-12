@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       name: localStorage.name,
-      admin: localStorage.name,
+      admin: "",
     };
   },
   watch: {
@@ -65,7 +65,9 @@ export default {
     this.$root.socket.on("enterMsg", (...args) => {
       this.admin = args;
 
+      /*setTimeout(() => {*/
       this.$store.dispatch("reqPlayers");
+      /*}, 20);*/
     });
 
     this.$root.socket.on("exitMsg", () => {
