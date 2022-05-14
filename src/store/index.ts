@@ -32,8 +32,8 @@ export default createStore({
     updatePlayers(state, players) {
       state.lobbys = players;
     },
-    updateAdmin(state, admin) {
-      state.admin_name = admin;
+    updateAdmin(state, admin_nm) {
+      state.admin_name = admin_nm;
     },
     updateRounds(state, num_rounds) {
       state.rounds = num_rounds;
@@ -44,15 +44,19 @@ export default createStore({
       //alert("this is args inside vuex: " + new_time);
       ctx.commit("updateTimeLimit", new_time);
     },
-    async reqPlayers(ctx) {
+    async reqPlayers(ctx, adm_name) {
       axios.get("http://localhost:3000/players").then((response) => {
         ctx.commit("updatePlayers", response.data);
+        ctx.commit("updateAdmin", adm_name);
         //this.state.lobbys = response.data;
       });
     },
     setRounds(ctx) {
       ctx.commit("updateRounds", this.state.lobbys.length);
     },
+    setAdminName(ctx, adm_name) {
+      ctx.commit("updateAdmin", adm_name);
+    }
   },
   modules: {},
 });
