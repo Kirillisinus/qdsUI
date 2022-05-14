@@ -13,17 +13,16 @@
     </div>
     <div class="middle">
       <div class="middle-logo">
-        <img src="../images/pen.png" alt="logo" class="mid-logo" />
+        <!--<img src="../images/pen.png" alt="logo" class="mid-logo" />-->
+        <canvas id="drawed-img">Обновите браузер!</canvas>
         <div class="card">Write a sentence</div>
       </div>
 
-      <div class="input-sentence">
-        <div class="input">
-          <input class="sentence" type="text" v-model="sentence" />
-          <router-link id="wr-bt" class="write" to="#" @click="done"
-            >done</router-link
-          >
-        </div>
+      <div class="input">
+        <input class="sentence" type="text" v-model="sentence" />
+        <router-link id="wr-bt" class="write" to="#" @click="done"
+          >done</router-link
+        >
       </div>
     </div>
   </div>
@@ -118,6 +117,7 @@ export default {
   align-items: center;
   align-content: center;
   justify-content: center;
+  width: 100%;
 }
 
 .card {
@@ -127,18 +127,16 @@ export default {
   margin-bottom: 10px;
 }
 .input {
-  align-content: center;
-  align-items: center;
   display: flex;
-  width: 80vw;
+  justify-content: center;
+  align-items: center;
   height: 8vh;
-  padding-left: 100px;
 }
 .sentence {
-  width: 100vw;
+  width: 60vw;
   height: 6vh;
   margin-right: 1em;
-  font-size: 40px;
+  font-size: 36px;
 }
 
 .write {
