@@ -73,6 +73,7 @@ export default {
 
     this.$root.socket.on("startMsg", (...args) => {
       //alert("this is args from serv: " + args);
+      this.$store.dispatch("setRounds");
       this.$store.dispatch("setTimeLimit", args);
       this.$router.push("/write");
     });
@@ -84,7 +85,6 @@ export default {
   },
   methods: {
     startGame() {
-      this.$store.dispatch("setRounds");
       this.$root.socket.emit("startGame", localStorage.name);
     },
 

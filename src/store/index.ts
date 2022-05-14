@@ -7,6 +7,7 @@ export default createStore({
     lobbys: [],
     admin_name: "",
     rounds: 0,
+    round: 1,
   },
   getters: {
     getTimeLimit(state) {
@@ -24,6 +25,9 @@ export default createStore({
     getNumRounds(state) {
       return state.rounds;
     },
+    getCurRound(state){
+      return state.round;
+    }
   },
   mutations: {
     updateTimeLimit(state, new_time) {
@@ -37,6 +41,9 @@ export default createStore({
     },
     updateRounds(state, num_rounds) {
       state.rounds = num_rounds;
+    },
+    updateRound(state) {
+      state.round++;
     },
   },
   actions: {
@@ -56,6 +63,9 @@ export default createStore({
     },
     setAdminName(ctx, adm_name) {
       ctx.commit("updateAdmin", adm_name);
+    },
+    setRound(ctx) {
+      ctx.commit("updateRound");
     }
   },
   modules: {},

@@ -1,7 +1,7 @@
 <template>
   <div class="write-player-sentence">
     <div class="up">
-      <div class="rounds">{{ getNumRounds }}/16</div>
+      <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer id="timer" class="base-timer"></baseTimer>
       <img
@@ -66,6 +66,7 @@ export default {
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
+      this.$store.dispatch("setRound");
       this.$router.push("/" + args[0].next_page);
     }),
       this.$root.socket.on("timeIsUp", () => {
@@ -81,7 +82,7 @@ export default {
     TweenMax.pauseAll();
   },
   computed: {
-    ...mapGetters(["getNumRounds"]),
+    ...mapGetters(["getNumRounds", "getCurRound"]),
   },
 };
 </script>
@@ -141,12 +142,13 @@ export default {
 
 .write {
   color: black;
-  height: 6vh;
+  text-align: center;
+  max-height: 6vh;
   background-color: orange;
   padding: 10px 40px;
   text-transform: uppercase;
   text-decoration: none;
-  font-size: 1.5em;
+  font-size: 1em;
   box-shadow: 0px 5px 10px rgba(darken(dodgerblue, 40%));
   transition: all 0.3s;
   cursor: pointer;

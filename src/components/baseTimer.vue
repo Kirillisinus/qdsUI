@@ -36,7 +36,7 @@ export default {
       TweenMax.pauseAll();
     },
     complete() {
-      document.getElementById("tim").style.display = "none";
+      document.getElementById("timer").style.display = "none";
       //this.$root.socket.emit("timeIsUp");
     },
   },
