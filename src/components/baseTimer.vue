@@ -37,7 +37,7 @@ export default {
     },
     complete() {
       document.getElementById("timer").style.display = "none";
-      //this.$root.socket.emit("timeIsUp");
+      this.$root.socket.emit("timeIsUp");
     },
   },
   computed: {
