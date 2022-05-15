@@ -1,41 +1,41 @@
 <template>
-<div class="lobby-view">
-  <div class="btn-back">
-    <router-link class="back" to="#" @click="goBack"> Назад </router-link>
-    <img src="../images/logo_transparent.png" alt="logo" id="logo-lobby" />
-  </div>
-  <div class="lobby">
-    <div class="room">
-      <div class="right-side">
-        <div class="count-players">Players {{ getNumPlayers }}/16</div>
-        <section class="players">
-          <div
-            id="plyr"
-            class="player"
-            v-for="(lobb, index) in getPlayers"
-            :key="index"
-          >
-            {{ lobb.user }}
-            <div class="adm-sign"></div>
+  <div class="lobby-view">
+    <div class="btn-back">
+      <router-link class="back" to="#" @click="goBack"> Назад </router-link>
+      <img src="../images/logo_transparent.png" alt="logo" id="logo-lobby" />
+    </div>
+    <div class="lobby">
+      <div class="room">
+        <div class="right-side">
+          <div class="count-players">Players {{ getNumPlayers }}/16</div>
+          <section class="players">
+            <div
+              id="plyr"
+              class="player"
+              v-for="(lobb, index) in getPlayers"
+              :key="index"
+            >
+              {{ lobb.user }}
+              <div class="adm-sign"></div>
+            </div>
+          </section>
+        </div>
+        <section class="game-settings">
+          <div class="settings-text">Custom settings</div>
+          <div class="settings"></div>
+          <div class="start-game">
+            <router-link class="button start-btn" to="#" @click="startGame">
+              <div>Начать</div>
+              <i class="icon-arrow-right"></i>
+            </router-link>
+            <div class="button invite-btn">
+              <div>Пригласить</div>
+              <i class="icon-arrow-right"></i>
+            </div>
           </div>
         </section>
       </div>
-      <section class="game-settings">
-        <div class="settings-text">Custom settings</div>
-        <div class="settings"></div>
-        <div class="start-game">
-          <router-link class="button start-btn" to="#" @click="startGame">
-            <div>Начать</div>
-            <i class="icon-arrow-right"></i>
-          </router-link>
-          <div class="button invite-btn">
-            <div>Пригласить</div>
-            <i class="icon-arrow-right"></i>
-          </div>
-        </div>
-      </section>
     </div>
-  </div>
   </div>
 </template>
 
@@ -47,35 +47,33 @@ export default {
   data() {
     return {
       name: localStorage.name,
-      admin: "",
     };
-  },
-  watch: {
-    admin() {
-      setTimeout(() => {
-        this.updateAdminDiv();
-      }, 1000);
-    },
   },
   beforeMount() {},
   mounted() {
     this.$forceUpdate();
+
+    setTimeout(() => {
+      this.updateAdminDiv();
+    }, 500);
   },
   created() {
     this.$root.socket.on("enterMsg", (...args) => {
-      this.admin = args;
+      //this.admin = args;
 
       /*setTimeout(() => {*/
-      this.$store.dispatch("reqPlayers");
+      this.$store.dispatch("reqPlayers", args);
+      //this.$store.dispatch("setAdminName", args);
       /*}, 20);*/
     });
 
-    this.$root.socket.on("exitMsg", () => {
-      this.$store.dispatch("reqPlayers");
+    this.$root.socket.on("exitMsg", (...args) => {
+      this.$store.dispatch("reqPlayers", args);
     });
 
     this.$root.socket.on("startMsg", (...args) => {
       //alert("this is args from serv: " + args);
+      this.$store.dispatch("setRounds");
       this.$store.dispatch("setTimeLimit", args);
       this.$router.push("/write");
     });
@@ -87,7 +85,6 @@ export default {
   },
   methods: {
     startGame() {
-      this.$store.dispatch("setRounds");
       this.$root.socket.emit("startGame", localStorage.name);
     },
 
@@ -98,9 +95,10 @@ export default {
       let adms = document.getElementsByClassName("player");
       for (let i = 0; i < adms.length; i++) {
         let arg1 = adms[i].textContent;
-        let arg2 = this.admin[0];
 
-        if (arg1.trim() === arg2) {
+        //alert(arg1.trim() + "/ /" + this.$store.state.admin_name + "/");
+
+        if (arg1.trim() == this.$store.state.admin_name) {
           adms[i].childNodes[1].style.display = "block";
         }
       }

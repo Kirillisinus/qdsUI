@@ -1,7 +1,7 @@
 <template>
   <div class="write-player-sentence">
     <div class="up">
-      <div class="rounds">{{ getNumRounds }}/16</div>
+      <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer id="timer" class="base-timer"></baseTimer>
       <img
@@ -13,17 +13,16 @@
     </div>
     <div class="middle">
       <div class="middle-logo">
-        <img src="../images/pen.png" alt="logo" class="mid-logo" />
+        <!--<img src="../images/pen.png" alt="logo" class="mid-logo" />-->
+        <canvas id="drawed-img">Обновите браузер!</canvas>
         <div class="card">Write a sentence</div>
       </div>
 
-      <div class="input-sentence">
-        <div class="input">
-          <input class="sentence" type="text" v-model="sentence" />
-          <router-link id="wr-bt" class="write" to="#" @click="done"
-            >done</router-link
-          >
-        </div>
+      <div class="input">
+        <input class="sentence" type="text" v-model="sentence" />
+        <router-link id="wr-bt" class="write" to="#" @click="done"
+          >done</router-link
+        >
       </div>
     </div>
   </div>
@@ -67,6 +66,7 @@ export default {
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
+      this.$store.dispatch("setRound");
       this.$router.push("/" + args[0].next_page);
     }),
       this.$root.socket.on("timeIsUp", () => {
@@ -82,7 +82,7 @@ export default {
     TweenMax.pauseAll();
   },
   computed: {
-    ...mapGetters(["getNumRounds"]),
+    ...mapGetters(["getNumRounds", "getCurRound"]),
   },
 };
 </script>
@@ -118,6 +118,7 @@ export default {
   align-items: center;
   align-content: center;
   justify-content: center;
+  width: 100%;
 }
 
 .card {
@@ -127,28 +128,27 @@ export default {
   margin-bottom: 10px;
 }
 .input {
-  align-content: center;
-  align-items: center;
   display: flex;
-  width: 80vw;
+  justify-content: center;
+  align-items: center;
   height: 8vh;
-  padding-left: 100px;
 }
 .sentence {
-  width: 100vw;
+  width: 60vw;
   height: 6vh;
   margin-right: 1em;
-  font-size: 40px;
+  font-size: 36px;
 }
 
 .write {
   color: black;
-  height: 6vh;
+  text-align: center;
+  max-height: 6vh;
   background-color: orange;
   padding: 10px 40px;
   text-transform: uppercase;
   text-decoration: none;
-  font-size: 1.5em;
+  font-size: 1em;
   box-shadow: 0px 5px 10px rgba(darken(dodgerblue, 40%));
   transition: all 0.3s;
   cursor: pointer;

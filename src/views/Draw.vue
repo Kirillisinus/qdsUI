@@ -1,7 +1,7 @@
 <template>
   <div class="draw-image">
     <div class="up">
-      <div class="rounds">{{ getNumRounds }}/16</div>
+      <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer id="timer" class="base-timer"></baseTimer>
       <img
@@ -18,6 +18,9 @@
       <canvas
         id="canvas"
         @mousemove="drawIfPressed($event)"
+        @touchmove="drawIfTouched($event)"
+        @touchstart="startDrawing($event)"
+        @touchend="stopDrawing($event)"
         height="500"
         width="900"
         >Обновите браузер!</canvas
@@ -50,7 +53,9 @@
           </label>
         </div>
         <div class="btn-row"></div>
-        <router-link id="d-bt" class="write" to="#" @click="done">done</router-link>
+        <router-link id="d-bt" class="write" to="#" @click="done"
+          >done</router-link
+        >
       </div>
     </div>
   </div>
@@ -65,7 +70,8 @@ export default {
   },
   data() {
     return {
-      ready:false,
+      isDrawing: false,
+      ready: false,
       size: 12,
       sizes: [6, 12, 24, 48],
       canvas: null,
@@ -95,18 +101,29 @@ export default {
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("drawImage", this.sentence);
+        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
+      this.$store.dispatch("setRound");
       this.$router.push("/" + args[0].next_page);
-    });
+    }),
+      this.$root.socket.on("timeIsUp", () => {
+        this.ready = true;
+
+        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
+      });
   },
   mounted() {
     this.$forceUpdate();
 
     this.canvas = document.getElementById("canvas");
+
+    var bodySize = document.body.getBoundingClientRect();
+    this.canvas.setAttribute("width", bodySize.width * 0.65);
+    //this.canvas.setAttribute("height", bodySize.width * 0.65);
+
     this.context = this.canvas.getContext("2d");
     this.context.lineCap = "round";
     this.context.lineWidth = this.size;
@@ -135,7 +152,7 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        this.$root.socket.emit("drawImage");
+        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
       }
 
       this.ready = true;
@@ -167,9 +184,57 @@ export default {
         this.context.closePath();
       }
     },
+    startDrawing(e) {
+      if (e.target == canvas) {
+        document.body.style.overflow = "hidden";
+        this.isDrawing = true;
+
+        /*console.log(
+        "--Start drawing--\n" +
+          "e.touches[0].pageX: " +
+          e.touches[0].pageX +
+          " e.touches[0].pageY: " +
+          e.touches[0].pageY +
+          "\nthis.canvas.offsetLeft: " +
+          this.canvas.offsetLeft +
+          " this.canvas.offsetTop: " +
+          this.canvas.offsetTop
+      );
+      console.log(
+        "e.touches[0].pageX - this.canvas.offsetLeft: " +
+          (e.touches[0].pageX - this.canvas.offsetLeft) +
+          " e.touches[0].pageY - this.canvas.offsetTop: " +
+          (e.touches[0].pageY - this.canvas.offsetTop)
+      );*/
+
+        this.context.beginPath();
+        this.context.moveTo(
+          e.touches[0].pageX - this.canvas.offsetLeft,
+          e.touches[0].pageY - this.canvas.offsetTop
+        );
+      }
+    },
+    drawIfTouched(e) {
+      if (e.target == canvas) {
+        document.body.style.overflow = "hidden";
+        if (this.isDrawing == true) {
+          var x = e.touches[0].pageX - this.canvas.offsetLeft;
+          var y = e.touches[0].pageY - this.canvas.offsetTop;
+
+          this.context.lineTo(x, y);
+          this.context.stroke();
+        }
+      }
+    },
+    stopDrawing(e) {
+      document.body.style.overflow = "hidden";
+      if (e.target == canvas) {
+        this.isDrawing = true;
+      }
+    },
   },
   computed: {
-    ...mapGetters(["getNumRounds"]),
+    ...mapGetters(["getNumRounds", "getCurRound"]),
   },
 };
 </script>
@@ -201,11 +266,12 @@ export default {
 }
 
 #canvas {
-  /*max-width: 80vw;
-  max-height: 80vh;*/
+  /*max-width: 80vw;*/
+  max-height: 80vh;
   background-color: white;
   border: 2px solid orange;
   cursor: crosshair;
+  margin-left: 1em;
 }
 
 .controls {
@@ -272,5 +338,22 @@ export default {
   text-transform: uppercase;
   font-size: 1.5rem;
   text-align: center;
+}
+
+@media (max-width: 1214px) {
+  .middle-draw {
+    flex-direction: column;
+  }
+  #palette {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+  }
+  #canvas {
+    /*width: 100%;
+    height: 100%;*/
+    margin: 0;
+    margin-top: 1em;
+  }
 }
 </style>
