@@ -1,13 +1,13 @@
 <template>
-  <Loader id="load"></Loader>
-  <div class="history">
+  <!--<Loader id="load"></Loader>-->
+  <div class="history-page">
     <router-link class="back" to="/"> home </router-link>
     <div class="room">
       <section class="players">
-        <div class="count-players">Players {{ getNumPlayers }}/16</div>
+        <!--<div class="count-players">Players {{ getNumPlayers }}/16</div>
         <div class="player" v-for="(lobb, index) in getPlayers" :key="index">
           {{ lobb.user }}
-        </div>
+        </div>-->
       </section>
       <section class="album">
         <div class="album-name">album</div>
@@ -17,9 +17,9 @@
             <p class="end-p">end of {{ name }}'s album</p>
           </div>
 
-          <router-link class="write" to="#" @click="newGame"
+          <!--<router-link class="write" to="/" @click="newGame"
             >Играть ещё</router-link
-          >
+          >-->
         </div>
       </section>
     </div>
@@ -39,12 +39,14 @@ export default {
     };
   },
   mounted() {
+    this.$forceUpdate();
+
     if (localStorage.name) {
       this.name = localStorage.name;
     }
   },
   methods: {
-    async newGame() {
+    /*async newGame() {
       let loader = document.getElementById("load");
 
       let body = document.getElementsByClassName("history")[0];
@@ -77,7 +79,7 @@ export default {
       localStorage.name = this.name;
 
       this.$router.push("/lobby");
-    },
+    },*/
   },
   computed: {
     ...mapGetters(["getNumPlayers", "getPlayers"]),
@@ -106,8 +108,6 @@ export default {
   flex-direction: column;
   align-items: center;
   margin: 15px;
-}
-.end {
 }
 
 .end-p {
