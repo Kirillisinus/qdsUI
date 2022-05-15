@@ -86,12 +86,6 @@ export default {
 </script>
 
 <style>
-#load {
-  display: none;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-}
 .room {
   justify-content: space-between;
   padding: 0 10px;
