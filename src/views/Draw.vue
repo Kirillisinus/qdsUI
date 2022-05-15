@@ -119,6 +119,11 @@ export default {
     this.$forceUpdate();
 
     this.canvas = document.getElementById("canvas");
+
+    var bodySize = document.body.getBoundingClientRect();
+    this.canvas.setAttribute("width", bodySize.width * 0.65);
+    //this.canvas.setAttribute("height", bodySize.width * 0.65);
+
     this.context = this.canvas.getContext("2d");
     this.context.lineCap = "round";
     this.context.lineWidth = this.size;
@@ -345,8 +350,8 @@ export default {
     margin: 0 auto;
   }
   #canvas {
-    width: 100%;
-    height: 100%;
+    /*width: 100%;
+    height: 100%;*/
     margin: 0;
     margin-top: 1em;
   }
