@@ -57,7 +57,7 @@ export default {
       this.updateAdminDiv();
     }, 500);
   },
-  async created() {  
+  created() {  
     this.$root.socket.on("enterMsg", (...args) => {
       //this.admin = args;
 
