@@ -57,14 +57,12 @@ export default {
       this.updateAdminDiv();
     }, 500);
   },
-  created() {
+  async created() {  
     this.$root.socket.on("enterMsg", (...args) => {
       //this.admin = args;
 
-      /*setTimeout(() => {*/
       this.$store.dispatch("reqPlayers", args);
       //this.$store.dispatch("setAdminName", args);
-      /*}, 20);*/
     });
 
     this.$root.socket.on("exitMsg", (...args) => {

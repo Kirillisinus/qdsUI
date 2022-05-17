@@ -52,7 +52,7 @@ export default createStore({
       ctx.commit("updateTimeLimit", new_time);
     },
     async reqPlayers(ctx, adm_name) {
-      axios.get("http://localhost:3000/players").then((response) => {
+      await axios.get("http://localhost:3000/players").then((response) => {
         ctx.commit("updatePlayers", response.data);
         ctx.commit("updateAdmin", adm_name);
         //this.state.lobbys = response.data;

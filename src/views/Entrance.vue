@@ -74,6 +74,8 @@ export default {
       }
       localStorage.name = this.name;
 
+      await this.$store.dispatch("reqPlayers", this.name);
+
       this.$router.push("/lobby");
     },
   },
