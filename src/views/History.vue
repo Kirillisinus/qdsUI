@@ -1,13 +1,13 @@
 <template>
   <Loader id="load"></Loader>
   <div class="history">
-    <router-link class="back" to="/"> home </router-link>
+    <router-link class="back" to="#" @click="home"> home </router-link>
     <div class="room">
       <section class="players">
-        <div class="count-players">Players {{ getNumPlayers }}/16</div>
+        <!--<div class="count-players">Players {{ getNumPlayers }}/16</div>
         <div class="player" v-for="(lobb, index) in getPlayers" :key="index">
           {{ lobb.user }}
-        </div>
+        </div>-->
       </section>
       <section class="album">
         <div class="album-name">album</div>
@@ -78,6 +78,11 @@ export default {
 
       this.$router.push("/lobby");
     },
+    home() {
+      this.$root.socket.emit('exitGame');
+
+      this.$router.push("/");
+    }
   },
   computed: {
     ...mapGetters(["getNumPlayers", "getPlayers"]),

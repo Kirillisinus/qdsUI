@@ -73,7 +73,7 @@ export default {
         return;
       }
       localStorage.name = this.name;
-
+      localStorage.reload = true;
       this.$router.push("/lobby");
     },
   },

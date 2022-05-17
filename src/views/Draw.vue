@@ -109,10 +109,11 @@ export default {
       this.$store.dispatch("setRound");
       this.$router.push("/" + args[0].next_page);
     }),
-      this.$root.socket.on("timeIsUp", () => {
+      this.$root.socket.on("timeIsUp", () => {      
+        if(!this.ready){
+          this.$root.socket.emit("drawImage", this.canvas.toDataURL());
+        }
         this.ready = true;
-
-        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
       });
   },
   mounted() {

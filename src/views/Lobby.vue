@@ -52,6 +52,15 @@ export default {
   beforeMount() {},
   mounted() {
     this.$forceUpdate();
+    
+    /*if(confirm('Please, reload page')){
+      location.reload();
+    }
+    if(localStorage.reload){
+      localStorage.reload = false;
+    var goal = self.location;
+    location.href = goal;
+    }*/
 
     setTimeout(() => {
       this.updateAdminDiv();

@@ -25,7 +25,7 @@ export default {
     if (info === "render function") {
       //alert(`cat EC: ${err.toString()}\ninfo: ${info}`);
       //setTimeout(() => {
-      //window.location.reload();
+      window.location.reload();
       //}, 50);
     }
 
