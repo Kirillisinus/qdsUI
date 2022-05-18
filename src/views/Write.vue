@@ -52,7 +52,8 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        this.$root.socket.emit("writeSentence", this.sentence);
+        alert(this.$store.getters.getCreator);
+        this.$root.socket.emit("writeData", {"sentence":this.sentence, "creator":this.$store.getters.getCreator});
       }
 
       this.ready = true;
@@ -61,7 +62,7 @@ export default {
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("writeSentence", this.sentence);
+        this.$root.socket.emit("writeData", this.sentence, this.$store.getters.getCreator);
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
@@ -72,7 +73,7 @@ export default {
       this.$root.socket.on("timeIsUp", () => {
         this.ready = true;
 
-        this.$root.socket.emit("writeSentence", this.sentence);
+        this.$root.socket.emit("writeData", this.sentence, this.$store.getters.getCreator);
       });
   },
   mounted() {

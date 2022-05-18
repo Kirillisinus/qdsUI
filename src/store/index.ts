@@ -8,6 +8,7 @@ export default createStore({
     admin_name: "",
     rounds: 0,
     round: 1,
+    creator: ""
   },
   getters: {
     getTimeLimit(state) {
@@ -27,6 +28,9 @@ export default createStore({
     },
     getCurRound(state){
       return state.round;
+    },
+    getCreator(state){
+      return state.creator;
     }
   },
   mutations: {
@@ -45,6 +49,9 @@ export default createStore({
     updateRound(state) {
       state.round++;
     },
+    updateCreator(state, new_creator){
+      state.creator = new_creator;
+    }
   },
   actions: {
     setTimeLimit(ctx, new_time) {
@@ -66,6 +73,9 @@ export default createStore({
     },
     setRound(ctx) {
       ctx.commit("updateRound");
+    },
+    setCreator(ctx, new_crtr){
+      ctx.commit("updateCreator", new_crtr);
     }
   },
   modules: {},

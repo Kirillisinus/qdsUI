@@ -12,7 +12,7 @@
       />
     </div>
     <div class="call-draw">Попробуй нарисовать!</div>
-    <div class="prev-sentence">Lorem ipsum</div>
+    <div class="prev-sentence">{{ sentence }}</div>
     <div class="middle-draw">
       <div id="palette"></div>
       <canvas
@@ -70,6 +70,7 @@ export default {
   },
   data() {
     return {
+      sentence: "Lorem ipsum",
       isDrawing: false,
       ready: false,
       size: 12,
@@ -101,7 +102,7 @@ export default {
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
+        this.$root.socket.emit("writeData", this.canvas.toDataURL());
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
@@ -109,9 +110,9 @@ export default {
       this.$store.dispatch("setRound");
       this.$router.push("/" + args[0].next_page);
     }),
-      this.$root.socket.on("timeIsUp", () => {      
-        if(!this.ready){
-          this.$root.socket.emit("drawImage", this.canvas.toDataURL());
+      this.$root.socket.on("timeIsUp", () => {
+        if (!this.ready) {
+          this.$root.socket.emit("writeData", this.canvas.toDataURL());
         }
         this.ready = true;
       });
@@ -138,6 +139,8 @@ export default {
       paletteBlock.style.backgroundColor = this.colors[r];
       palette.appendChild(paletteBlock);
     }
+
+    this.updContent();
   },
   beforeUnmount() {
     TweenMax.pauseAll();
@@ -153,10 +156,21 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
+        this.$root.socket.emit("writeData", this.canvas.toDataURL());
       }
 
       this.ready = true;
+    },
+    async updContent() {
+      let url =
+        "http://localhost:3000/whattomake/" +
+        this.name +
+        "/" +
+        this.$store.getters.getCreator;
+
+      await axios.get(url).then((response) => {
+        this.sentence = response.data;
+      });
     },
     setSize(s) {
       this.context.lineWidth = s;

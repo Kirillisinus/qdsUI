@@ -65,6 +65,8 @@ export default {
     setTimeout(() => {
       this.updateAdminDiv();
     }, 500);
+
+    this.$store.dispatch("setCreator", this.name);
   },
   created() {  
     this.$root.socket.on("enterMsg", (...args) => {
