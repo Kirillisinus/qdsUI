@@ -102,7 +102,7 @@ export default {
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("writeData", this.canvas.toDataURL());
+        this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
@@ -112,7 +112,7 @@ export default {
     }),
       this.$root.socket.on("timeIsUp", () => {
         if (!this.ready) {
-          this.$root.socket.emit("writeData", this.canvas.toDataURL());
+          this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
         }
         this.ready = true;
       });
@@ -156,7 +156,7 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        this.$root.socket.emit("writeData", this.canvas.toDataURL());
+        this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
       }
 
       this.ready = true;
@@ -169,7 +169,9 @@ export default {
         this.$store.getters.getCreator;
 
       await axios.get(url).then((response) => {
-        this.sentence = response.data;
+        this.sentence = response.data.data;
+
+        this.$store.dispatch("setCreator", response.data.creator);
       });
     },
     setSize(s) {
