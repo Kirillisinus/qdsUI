@@ -9,12 +9,7 @@
         <div class="right-side">
           <div class="count-players">Players {{ getNumPlayers }}/16</div>
           <section class="players">
-            <div
-              id="plyr"
-              class="player"
-              v-for="(lobb, index) in getPlayers"
-              :key="index"
-            >
+            <div id="plyr" class="player" v-for="(lobb, index) in getPlayers" :key="index">
               {{ lobb.user }}
               <div class="adm-sign"></div>
             </div>
@@ -49,10 +44,10 @@ export default {
       name: localStorage.name,
     };
   },
-  beforeMount() {},
+  beforeMount() { },
   mounted() {
     this.$forceUpdate();
-    
+
     /*if(confirm('Please, reload page')){
       location.reload();
     }
@@ -68,7 +63,7 @@ export default {
 
     this.$store.dispatch("setCreator", this.name);
   },
-  created() {  
+  created() {
     this.$root.socket.on("enterMsg", (...args) => {
       //this.admin = args;
 
@@ -149,6 +144,7 @@ export default {
   /*margin-bottom: 20px;*/
   cursor: pointer;
 }
+
 .back:after {
   /*position: absolute;*/
   content: " ";
@@ -158,10 +154,12 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 .back:hover {
   color: #fff;
   background: orange;
 }
+
 .back:hover:after {
   background: orange;
 }
@@ -170,6 +168,7 @@ export default {
   display: flex;
   max-height: 70vh;
 }
+
 .right-side {
   border-radius: 20px;
   background: rgba(255, 234, 13, 0.28);
@@ -177,6 +176,7 @@ export default {
   margin: 0 1.5em;
   overflow: hidden;
 }
+
 .players {
   max-height: 65vh;
   display: inherit;
@@ -186,10 +186,12 @@ export default {
   padding: 0 0.5em;
   overflow-y: scroll;
 }
+
 .players::-webkit-scrollbar,
 .count-players::-webkit-scrollbar {
   width: 0;
 }
+
 .count-players {
   background: none;
   font-size: 3vw;
@@ -197,6 +199,7 @@ export default {
   text-align: center;
   margin-top: 10px;
 }
+
 .player {
   display: flex;
   align-items: center;
@@ -211,6 +214,7 @@ export default {
   border-top-right-radius: 10px;
   margin: 0.2em auto;
 }
+
 .empty {
   border: 2px solid black;
   background-color: #cfcece;
@@ -222,6 +226,7 @@ export default {
   border-top-right-radius: 10px;
   margin: 0.2em auto;
 }
+
 .game-settings {
   border-radius: 20px;
   background: rgba(255, 234, 13, 0.28);
@@ -233,12 +238,15 @@ export default {
   font-size: 2.5vw;
   padding: 0.5em;
 }
+
 .start-game {
   display: flex;
 }
+
 .start-btn {
   margin-right: 2em;
 }
+
 .adm-sign {
   display: none;
   width: 0;
@@ -246,5 +254,31 @@ export default {
   border-width: 20px 10px 5px;
   border-style: solid;
   border-color: #e95557 #e95557 transparent;
+}
+
+@media (max-width: 858px) {
+  #content {
+    max-width: unset;
+  }
+
+  .room {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .right-side {
+    width: 90%;
+  }
+
+  .game-settings {
+    margin-top: 1em;
+    width: 90%;
+    min-width: unset;
+    max-width: unset;
+  }
+
+  .button {
+    font-size: 15px;
+  }
 }
 </style>
