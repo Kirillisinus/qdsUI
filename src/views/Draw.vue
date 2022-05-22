@@ -168,7 +168,7 @@ export default {
     async updContent() {
       let status_code = "200";
       let url =
-        "http://localhost:3000/whattomake/" +
+        "https://qds-serv.herokuapp.com/whattomake/" +
         localStorage.name +
         "/" +
         this.$store.getters.getCreator;
