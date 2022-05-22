@@ -4,12 +4,7 @@
       <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer id="timer" class="base-timer"></baseTimer>
-      <img
-        src="../images/check.png"
-        alt="ready"
-        class="ready-icon"
-        id="rdy-i"
-      />
+      <img src="../images/check.png" alt="ready" class="ready-icon" id="rdy-i" />
     </div>
     <div class="middle">
       <div class="middle-logo">
@@ -20,15 +15,14 @@
 
       <div class="input">
         <input class="sentence" type="text" v-model="sentence" />
-        <router-link id="wr-bt" class="write" to="#" @click="done"
-          >done</router-link
-        >
+        <router-link id="wr-bt" class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import { mapGetters } from "vuex";
 import baseTimer from "../components/baseTimer.vue";
 export default {
@@ -52,16 +46,46 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        this.$root.socket.emit("writeSentence", this.sentence);
+        alert(this.$store.getters.getCreator);
+        this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
       }
 
       this.ready = true;
+    },
+    async updContent() {
+      let status_code = "200";
+      let url =
+        "http://localhost:3000/whattomake/" +
+        localStorage.name +
+        "/" +
+        this.$store.getters.getCreator;
+
+      await axios.get(url).catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          status_code = error.response.status;
+          console.log(error.response.headers);
+          console.log(error.config);
+        }
+      });
+
+      if (status_code === "200") {
+        await axios.get(url).then((response) => {
+          this.sentence = response.data.data;
+          alert(response.data.data);
+
+          this.$store.dispatch("setCreator", response.data.creator);
+        });
+      }
     },
   },
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("writeSentence", this.sentence);
+        this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
@@ -72,8 +96,11 @@ export default {
       this.$root.socket.on("timeIsUp", () => {
         this.ready = true;
 
-        this.$root.socket.emit("writeSentence", this.sentence);
+        this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
       });
+  },
+  beforeMount() {
+    this.updContent();
   },
   mounted() {
     this.$forceUpdate();
@@ -93,9 +120,12 @@ export default {
   margin: auto;
   width: 100px;
 }
+
 .middle-logo {
+  margin: 0 auto;
   margin-top: 5em;
 }
+
 .mid-logo {
   display: block;
   margin: auto;
@@ -127,12 +157,14 @@ export default {
   font-size: 8vh;
   margin-bottom: 10px;
 }
+
 .input {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 8vh;
 }
+
 .sentence {
   width: 60vw;
   height: 6vh;
@@ -155,17 +187,41 @@ export default {
   border-radius: 5px;
   border-bottom: 4px solid lighten(gray, 70%);
 }
+
 .write:hover {
   box-shadow: 0px 15px 25px -5px rgba(darken(dodgerblue, 40%));
   transform: scale(1.03);
 }
+
 .write:active {
   box-shadow: 0px 4px 8px rgba(darken(dodgerblue, 30%));
   transform: scale(0.98);
 }
+
 .ready-icon {
   display: none;
   height: 3em;
   width: 3em;
+}
+
+@media (max-width: 858px) {
+  .player {
+    font-size: 2em;
+  }
+  .card{
+    font-size: 4vh;
+    text-align: center;
+  }
+  .input{
+    flex-direction: column;
+  }
+  .sentence{
+    height: 4vh;
+    margin: 0;
+  }
+  
+  .input > .write {
+    margin-top: 10px;
+  }
 }
 </style>

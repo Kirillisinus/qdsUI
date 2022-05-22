@@ -1,7 +1,7 @@
 <template>
-  <!--<Loader id="load"></Loader>-->
-  <div class="history-page">
-    <router-link class="back" to="/"> home </router-link>
+  <Loader id="load"></Loader>
+  <div class="history">
+    <router-link class="back" to="#" @click="home"> home </router-link>
     <div class="room">
       <section class="players">
         <!--<div class="count-players">Players {{ getNumPlayers }}/16</div>
@@ -46,7 +46,7 @@ export default {
     }
   },
   methods: {
-    /*async newGame() {
+    async newGame() {
       let loader = document.getElementById("load");
 
       let body = document.getElementsByClassName("history")[0];
@@ -79,7 +79,12 @@ export default {
       localStorage.name = this.name;
 
       this.$router.push("/lobby");
-    },*/
+    },
+    home() {
+      this.$root.socket.emit('exitGame');
+
+      this.$router.push("/");
+    }
   },
   computed: {
     ...mapGetters(["getNumPlayers", "getPlayers"]),

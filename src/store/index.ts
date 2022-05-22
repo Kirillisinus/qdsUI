@@ -8,6 +8,7 @@ export default createStore({
     admin_name: "",
     rounds: 0,
     round: 1,
+    creator: ""
   },
   getters: {
     getTimeLimit(state) {
@@ -27,6 +28,9 @@ export default createStore({
     },
     getCurRound(state){
       return state.round;
+    },
+    getCreator(state){
+      return state.creator;
     }
   },
   mutations: {
@@ -45,15 +49,19 @@ export default createStore({
     updateRound(state) {
       state.round++;
     },
+    updateCreator(state, new_creator){
+      state.creator = new_creator;
+    }
   },
   actions: {
     setTimeLimit(ctx, new_time) {
       //alert("this is args inside vuex: " + new_time);
       ctx.commit("updateTimeLimit", new_time);
     },
-    async reqPlayers(ctx) {
+    async reqPlayers(ctx, adm_name) {
       await axios.get("https://qds-serv.herokuapp.com/players").then((response) => {
-        ctx.commit('updatePlayers',response.data)
+        ctx.commit("updatePlayers", response.data);
+        ctx.commit("updateAdmin", adm_name);
         //this.state.lobbys = response.data;
       });
     },
@@ -65,6 +73,9 @@ export default createStore({
     },
     setRound(ctx) {
       ctx.commit("updateRound");
+    },
+    setCreator(ctx, new_crtr){
+      ctx.commit("updateCreator", new_crtr);
     }
   },
   modules: {},

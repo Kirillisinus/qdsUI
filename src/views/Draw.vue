@@ -12,7 +12,7 @@
       />
     </div>
     <div class="call-draw">Попробуй нарисовать!</div>
-    <div class="prev-sentence">Lorem ipsum</div>
+    <div class="prev-sentence">{{ sentence }}</div>
     <div class="middle-draw">
       <div id="palette"></div>
       <canvas
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { mapGetters } from "vuex";
 import baseTimer from "../components/baseTimer.vue";
 export default {
@@ -70,6 +71,7 @@ export default {
   },
   data() {
     return {
+      sentence: "Lorem ipsum",
       isDrawing: false,
       ready: false,
       size: 12,
@@ -101,7 +103,7 @@ export default {
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
+        this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
@@ -110,10 +112,14 @@ export default {
       this.$router.push("/" + args[0].next_page);
     }),
       this.$root.socket.on("timeIsUp", () => {
+        if (!this.ready) {
+          this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
+        }
         this.ready = true;
-
-        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
       });
+  },
+  beforeMount(){
+    this.updContent();
   },
   mounted() {
     this.$forceUpdate();
@@ -137,6 +143,8 @@ export default {
       paletteBlock.style.backgroundColor = this.colors[r];
       palette.appendChild(paletteBlock);
     }
+
+    
   },
   beforeUnmount() {
     TweenMax.pauseAll();
@@ -152,10 +160,39 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        this.$root.socket.emit("drawImage", this.canvas.toDataURL());
+        this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
       }
 
       this.ready = true;
+    },
+    async updContent() {
+      let status_code = "200";
+      let url =
+        "http://localhost:3000/whattomake/" +
+        localStorage.name +
+        "/" +
+        this.$store.getters.getCreator;
+
+      await axios.get(url).catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          status_code = error.response.status;
+          console.log(error.response.headers);
+          console.log(error.config);
+        }
+      });
+
+      if (status_code === "200") {
+        await axios.get(url).then((response) => {
+          this.sentence = response.data.data;
+          alert(response.data.data);
+
+          this.$store.dispatch("setCreator", response.data.creator);
+        });
+      }
     },
     setSize(s) {
       this.context.lineWidth = s;
@@ -349,11 +386,29 @@ export default {
     justify-content: center;
     margin: 0 auto;
   }
+  .color {
+    width: 1.2em;
+    height: 1.2em;
+  }
   #canvas {
     /*width: 100%;
     height: 100%;*/
     margin: 0;
     margin-top: 1em;
+  }
+  .btn-row > .back {
+    width: 90px;
+  }
+  .controls > .write {
+    margin-bottom: 7px;
+    padding: 10px 29px;
+  }
+  .size-item{
+    width: 20px;
+    height: 45px;
+  }
+  .size-item:last-child {
+    margin-left: 0.7em;
   }
 }
 </style>
