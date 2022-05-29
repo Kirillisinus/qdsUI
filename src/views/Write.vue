@@ -46,7 +46,7 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        alert(this.$store.getters.getCreator);
+        //alert(this.$store.getters.getCreator);
         this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
       }
 
