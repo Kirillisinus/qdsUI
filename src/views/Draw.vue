@@ -4,27 +4,15 @@
       <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer id="timer" class="base-timer"></baseTimer>
-      <img
-        src="../images/check.png"
-        alt="ready"
-        class="ready-icon"
-        id="rdy-i"
-      />
+      <img src="../images/check.png" alt="ready" class="ready-icon" id="rdy-i" />
     </div>
     <div class="call-draw">Попробуй нарисовать!</div>
     <div class="prev-sentence">{{ sentence }}</div>
     <div class="middle-draw">
       <div id="palette"></div>
-      <canvas
-        id="canvas"
-        @mousemove="drawIfPressed($event)"
-        @touchmove="drawIfTouched($event)"
-        @touchstart="startDrawing($event)"
-        @touchend="stopDrawing($event)"
-        height="500"
-        width="900"
-        >Обновите браузер!</canvas
-      >
+      <canvas id="canvas" @mousemove="drawIfPressed($event)" @touchmove="drawIfTouched($event)"
+        @touchstart="startDrawing($event)" @touchend="stopDrawing($event)" height="500" width="900">Обновите
+        браузер!</canvas>
     </div>
     <div class="down">
       <div class="controls">
@@ -33,29 +21,15 @@
         </div>
 
         <div class="btn-row">
-          <label
-            v-for="sizeItem in sizes"
-            class="size-item"
-            v-bind:key="sizeItem"
-          >
-            <input
-              type="radio"
-              name="size"
-              v-model="size"
-              v-bind:value="sizeItem"
-              class="size"
-              v-bind:style="{
-                width: sizeItem + 10 + 'px',
-                height: sizeItem + 10 + 'px',
-              }"
-              @change="setSize(sizeItem)"
-            />
+          <label v-for="sizeItem in sizes" class="size-item" v-bind:key="sizeItem">
+            <input type="radio" name="size" v-model="size" v-bind:value="sizeItem" class="size" v-bind:style="{
+              width: sizeItem + 10 + 'px',
+              height: sizeItem + 10 + 'px',
+            }" @change="setSize(sizeItem)" />
           </label>
         </div>
         <div class="btn-row"></div>
-        <router-link id="d-bt" class="write" to="#" @click="done"
-          >done</router-link
-        >
+        <router-link id="d-bt" class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
   </div>
@@ -103,22 +77,22 @@ export default {
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
+        this.$root.socket.emit("writeData", { "sentence": this.canvas.toDataURL(), "creator": this.$store.getters.getCreator });
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
-      this.$store.dispatch("setRound");
+      
       this.$router.push("/" + args[0].next_page);
     }),
       this.$root.socket.on("timeIsUp", () => {
         if (!this.ready) {
-          this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
+          this.$root.socket.emit("writeData", { "sentence": this.canvas.toDataURL(), "creator": this.$store.getters.getCreator });
         }
         this.ready = true;
       });
   },
-  beforeMount(){
+  beforeMount() {
     this.updContent();
   },
   mounted() {
@@ -144,10 +118,11 @@ export default {
       palette.appendChild(paletteBlock);
     }
 
-    
+
   },
   beforeUnmount() {
     TweenMax.pauseAll();
+    this.$store.dispatch("setRound");
   },
   methods: {
     done() {
@@ -160,18 +135,23 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        this.$root.socket.emit("writeData", {"sentence":this.canvas.toDataURL(), "creator":this.$store.getters.getCreator});
+        let crtr = this.$store.getters.getCreator;
+        this.$root.socket.emit("writeData", { "sentence": this.canvas.toDataURL(), "creator": crtr });
       }
 
       this.ready = true;
     },
     async updContent() {
+      let round_now=this.$store.getters.getCurRound-2;
+      //alert("round_now" + round_now);
+      let crtr = this.$store.getters.getCreator;
       let status_code = "200";
       let url =
         "https://qds-serv.herokuapp.com/whattomake/" +
         localStorage.name +
         "/" +
-        this.$store.getters.getCreator;
+        //crtr;
+        round_now;
 
       await axios.get(url).catch(function (error) {
         if (error.response) {
@@ -188,7 +168,7 @@ export default {
       if (status_code === "200") {
         await axios.get(url).then((response) => {
           this.sentence = response.data.data;
-          alert(response.data.data);
+          //alert(response.data.data);
 
           this.$store.dispatch("setCreator", response.data.creator);
         });
@@ -287,6 +267,7 @@ export default {
   cursor: pointer;
   border: solid 1px #fff;
 }
+
 .color:hover {
   border: solid 1px #f00;
 }
@@ -329,6 +310,7 @@ export default {
   padding: 0 15px;
   border-radius: 4px;
 }
+
 .size {
   background-color: rgb(140, 140, 140);
   display: inline-block;
@@ -339,9 +321,11 @@ export default {
   top: 50%;
   left: 50%;
 }
+
 .size:hover {
   opacity: 0.8;
 }
+
 .size-item {
   width: 40px;
   height: 60px;
@@ -352,6 +336,7 @@ export default {
   vertical-align: top;
   cursor: pointer;
 }
+
 .down {
   margin-top: 1em;
 }
@@ -371,6 +356,7 @@ export default {
     -2px -2px 0 #000000, 2px -2px 0 #000000, -2px 2px 0 #000000,
     2px 2px 0 #000000;
 }
+
 .call-draw {
   text-transform: uppercase;
   font-size: 1.5rem;
@@ -381,32 +367,39 @@ export default {
   .middle-draw {
     flex-direction: column;
   }
+
   #palette {
     display: flex;
     justify-content: center;
     margin: 0 auto;
   }
+
   .color {
     width: 1.2em;
     height: 1.2em;
   }
+
   #canvas {
     /*width: 100%;
     height: 100%;*/
     margin: 0;
     margin-top: 1em;
   }
-  .btn-row > .back {
+
+  .btn-row>.back {
     width: 90px;
   }
-  .controls > .write {
+
+  .controls>.write {
     margin-bottom: 7px;
     padding: 10px 29px;
   }
-  .size-item{
+
+  .size-item {
     width: 20px;
     height: 45px;
   }
+
   .size-item:last-child {
     margin-left: 0.7em;
   }
