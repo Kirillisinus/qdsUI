@@ -30,6 +30,8 @@ export default {
     return {
       sentence: "",
       ready: false,
+      canvas: null,
+      context: null,
     };
   },
   components: {
@@ -46,19 +48,27 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        alert(this.$store.getters.getCreator);
-        this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
+
+        let crtr = this.$store.getters.getCreator;
+
+        this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": crtr });
       }
 
       this.ready = true;
     },
     async updContent() {
+      let round_now = this.$store.getters.getCurRound - 2;
+      if (round_now <= 0) {
+        return;
+      }
+      let crtr = this.$store.getters.getCreator;
       let status_code = "200";
       let url =
         "http://localhost:3000/whattomake/" +
         localStorage.name +
         "/" +
-        this.$store.getters.getCreator;
+        //crtr;
+        round_now;
 
       await axios.get(url).catch(function (error) {
         if (error.response) {
@@ -72,15 +82,36 @@ export default {
         }
       });
 
+      var image = new Image();
+
       if (status_code === "200") {
         await axios.get(url).then((response) => {
-          this.sentence = response.data.data;
-          alert(response.data.data);
+          image.src = response.data.data;
+          //console.log(image.src);
+          this.context.drawImage(image, 0, 0, 500,300);
+          //this.loadImageURL(response.data.data);
+          //this.sentence = response.data.data;
+          //alert(response.data.data);
 
-          this.$store.dispatch("setCreator", response.data.creator);
+          //this.$store.dispatch("setCreator", response.data.creator);
         });
+
+
       }
     },
+    loadImageURL(base64) {
+      var image = document.createElement("img");
+      image.addEventListener("load", function () {
+        var color = this.context.fillStyle, size = this.context.lineWidth;
+        this.context.canvas.width = image.width;
+        this.context.canvas.height = image.height;
+        this.context.drawImage(image, 0, 0);
+        this.context.fillStyle = color;
+        this.context.strokeStyle = color;
+        this.context.lineWidth = size;
+      });
+      image.src = base64;
+    }
   },
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
@@ -90,23 +121,34 @@ export default {
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
-      this.$store.dispatch("setRound");
-      this.$router.push("/" + args[0].next_page);
-    }),
-      this.$root.socket.on("timeIsUp", () => {
-        this.ready = true;
 
-        this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
-      });
+      this.$router.push("/" + args[0].next_page);
+    });
+
+    this.$root.socket.on("timeIsUp", () => {
+      this.ready = true;
+
+      this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
+    });
+
+    /*this.$root.socket.on("updCreator", (...args) => {
+      alert("set creator = " + args);
+    });*/
+
   },
   beforeMount() {
     this.updContent();
   },
   mounted() {
     this.$forceUpdate();
+
+    this.canvas = document.getElementById("drawed-img");
+    this.context = this.canvas.getContext("2d");
+    //this.canvas.setAttribute("width", bodySize.width * 0.65);
   },
   beforeUnmount() {
     TweenMax.pauseAll();
+    this.$store.dispatch("setRound");
   },
   computed: {
     ...mapGetters(["getNumRounds", "getCurRound"]),
@@ -208,19 +250,22 @@ export default {
   .player {
     font-size: 2em;
   }
-  .card{
+
+  .card {
     font-size: 4vh;
     text-align: center;
   }
-  .input{
+
+  .input {
     flex-direction: column;
   }
-  .sentence{
+
+  .sentence {
     height: 4vh;
     margin: 0;
   }
-  
-  .input > .write {
+
+  .input>.write {
     margin-top: 10px;
   }
 }
