@@ -9,7 +9,12 @@
         <div class="right-side">
           <div class="count-players">Players {{ getNumPlayers }}/16</div>
           <section class="players">
-            <div id="plyr" class="player" v-for="(lobb, index) in getPlayers" :key="index">
+            <div
+              id="plyr"
+              class="player"
+              v-for="(lobb, index) in getPlayers"
+              :key="index"
+            >
               {{ lobb.user }}
               <div class="adm-sign"></div>
             </div>
@@ -37,14 +42,13 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
-
 export default {
   data() {
     return {
       name: localStorage.name,
     };
   },
-  beforeMount() { },
+  beforeMount() {},
   mounted() {
     this.$forceUpdate();
 
@@ -278,7 +282,7 @@ export default {
   }
 
   .button {
-    font-size: 15px;
+    font-size: 10px;
   }
 }
 </style>

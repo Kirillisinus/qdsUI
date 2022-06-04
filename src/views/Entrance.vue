@@ -52,13 +52,14 @@ export default {
 
       body.style.display = "none";
 
-      loader.style.display = "block";
+      //loader.style.display = "block";
 
       let url = "http://localhost:3000/login/" + this.name;
       let resp = "notok";
 
       await axios.get(url).then((response) => {
         resp = response.data.result;
+
         loader.style.display = "none";
         body.style.display = "flex";
         content.style.border = "4px #f5d731f1 solid";
@@ -76,6 +77,13 @@ export default {
       localStorage.reload = true;
       this.$router.push("/lobby");
     },
+    showToggle() {
+      if (this.show) {
+        this.show = false;
+      } else {
+        this.show = true;
+      }
+    },
   },
 };
 </script>
@@ -83,9 +91,6 @@ export default {
 <style>
 #load {
   display: none;
-  position: absolute;
-  top: 50%;
-  left: 50%;
 }
 #logo {
   display: block;
