@@ -3,11 +3,15 @@
   <div class="history">
     <router-link class="back" to="#" @click="home"> home </router-link>
     <div class="room">
-      <section class="players">
+      <section id="custom-players" class="players">
         <!--<div class="count-players">Players {{ getNumPlayers }}/16</div>
         <div class="player" v-for="(lobb, index) in getPlayers" :key="index">
           {{ lobb.user }}
         </div>-->
+        <!-- <div class="count-players">Players {{ users.length }}/16</div>
+        <div class="player" v-for="(lobb, index) in users" :key="index">
+          {{ lobb }}
+        </div> -->
       </section>
       <section class="album">
         <div class="album-name">album</div>
@@ -27,6 +31,7 @@
 </template>
 
 <script >
+import axios from "axios";
 import { mapGetters } from "vuex";
 import Loader from "../components/loader.vue";
 export default {
@@ -36,14 +41,42 @@ export default {
   data() {
     return {
       name: (String = "Гость123123123"),
+      users: [],
     };
   },
   mounted() {
     if (localStorage.name) {
       this.name = localStorage.name;
     }
+
+    this.loadGameSessionInfo();
   },
   methods: {
+    async loadGameSessionInfo() {
+      let url = "http://localhost:3000/history";
+      let resp;
+
+      await axios.get(url).then((response) => {
+        resp = response.data;
+      });
+
+      let block_for_players = document.getElementById("custom-players");
+      let playerCountBlock = document.createElement("div");
+      playerCountBlock.className = "count-players";
+      playerCountBlock.textContent = "Players " + resp.length + "/16";
+      block_for_players.appendChild(playerCountBlock);
+
+      for (let i = 0; i < resp.length; i++) {
+        // this.users.push(resp[i].name);
+
+        let playerBlock = document.createElement("div");
+        playerBlock.className = "player";
+        playerBlock.textContent = resp[i].name;
+        block_for_players.appendChild(playerBlock);
+      }
+
+      console.log(this.users);
+    },
     async newGame() {
       let loader = document.getElementById("load");
 
@@ -79,10 +112,10 @@ export default {
       this.$router.push("/lobby");
     },
     home() {
-      this.$root.socket.emit('exitGame');
+      this.$root.socket.emit("exitGame");
 
       this.$router.push("/");
-    }
+    },
   },
   computed: {
     ...mapGetters(["getNumPlayers", "getPlayers"]),
@@ -94,6 +127,7 @@ export default {
 .room {
   justify-content: space-between;
   padding: 0 10px;
+  margin-top: 1em;
 }
 .album {
   border-radius: 20px;
@@ -104,6 +138,14 @@ export default {
   align-items: center;
   font-size: 2.5vw;
   padding: 0 0.5em;
+}
+
+#custom-players {
+  border-radius: 20px;
+  background: rgba(255, 234, 13, 0.28);
+  min-width: 35%;
+  margin: 0 1.5em;
+  overflow: hidden;
 }
 .end-game {
   align-self: stretch;
