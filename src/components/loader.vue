@@ -1,21 +1,44 @@
 <template>
-  <div class="lds-default">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+  <div class="main-cont">
+    <div class="lds-default">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {};
+  },
+  mounted() {},
+  methods: {},
+};
+</script>
+
+
 <style scoped>
+.main-cont {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
 .lds-default {
   display: inline-block;
   position: relative;
@@ -26,7 +49,7 @@
   position: absolute;
   width: 6px;
   height: 6px;
-  background: #2EF0B5;
+  background: #2ef0b5;
   border-radius: 50%;
   animation: lds-default 1.2s linear infinite;
 }
