@@ -8,18 +8,59 @@
         <div id="albn" class="album-name count-players">
           {{ active_player_name }}'s album
         </div>
-        <div id="albgs" class="game-session-album"></div>
+        <div id="albgs" class="game-session-album">
+          <div class="msg-block-right">
+            <span class="msg-autor">Деда Шер</span>
+            <div class="message">
+              <span class="msg-text">lorem ipsum</span>
+            </div>
+          </div>
+          <div class="msg-block-left">
+            <span class="msg-autor">Баба Пчола</span>
+            <div class="message">
+              <div class="msg-content">
+                <img id="img_msg" />
+              </div>
+            </div>
+          </div>
+          <div class="msg-block-right">
+            <span class="msg-autor">Деда Шер</span>
+            <div class="message">
+              <span class="msg-text">lorem ipsum</span>
+            </div>
+          </div>
+          <div class="msg-block-left">
+            <span class="msg-autor">Баба Пчола</span>
+            <div class="message">
+              <div class="msg-content">
+                <img id="img_msg" />
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="end-game">
           <div class="end">
             <p class="end-p">end of {{ name }}'s album</p>
           </div>
-          <button class="write" @click="buildHistory($event)">
-            Предыдущий
-          </button>
-          <button class="write" @click="buildHistory($event)">Следующий</button>
-          <router-link id="new_turn" class="write" to="#" @click="newGame"
-            >Играть ещё</router-link
-          >
+          <div class="end-buttons">
+            <button
+              id="prev_btn"
+              class="write"
+              @click="choosePlayer($event, 'p')"
+            >
+              Предыдущий
+            </button>
+            <button
+              id="next_btn"
+              class="write"
+              @click="choosePlayer($event, 'n')"
+            >
+              Следующий
+            </button>
+            <router-link id="new_turn" class="write" to="#" @click="home"
+              >Играть ещё</router-link
+            >
+          </div>
         </div>
       </section>
     </div>
@@ -85,28 +126,29 @@ export default {
       block_for_players.childNodes[1].style.backgroundColor =
         "rgb(175, 174, 174)";
     },
-    buildHistory(e) {
-      let block_for_players = document.getElementById("custom-players");
-
+    buildHistory() {
       let game_session_block = document.getElementById("albgs");
 
-      if (e) {
-        if (this.active_user === this.game_info - 1) {
-        }
-        block_for_players.childNodes[
-          this.active_user + 1
-        ].style.backgroundColor = "#bfedcd";
+      let msgRightBlock = document.createElement("div");
+      msgRightBlock.className = "msg-block-right";
 
-        console.log(this.active_player_name + " " + this.active_user);
-        this.active_user++;
+      let msgLeftBlock = document.createElement("div");
+      msgLeftBlock.className = "msg-block-left";
 
-        this.active_player_name = this.game_info[this.active_user].name;
-        console.log(this.active_player_name + " " + this.active_user);
+      let msgAutor = document.createElement("div");
+      msgRightBlock.className = "msg-autor";
 
-        block_for_players.childNodes[
-          this.active_user + 1
-        ].style.backgroundColor = "rgb(175, 174, 174)";
-      }
+      let msgMessage = document.createElement("div");
+      msgRightBlock.className = "message";
+
+      let msgText = document.createElement("div");
+      msgRightBlock.className = "msg-text";
+
+      let msgContent = document.createElement("div");
+      msgRightBlock.className = "msg-content";
+
+      let msgImg = document.createElement("div");
+      msgRightBlock.className = "img_msg";
     },
     async newGame() {
       let loader = document.getElementById("load");
@@ -142,9 +184,50 @@ export default {
 
       this.$router.push("/lobby");
     },
-    choosePlayer() {
-      // let album_name = document.getElementById("albn");
-      // album_name.textContent = "";
+    choosePlayer(e, arg) {
+      let block_for_players = document.getElementById("custom-players");
+
+      let next_btn = document.getElementById("next_btn");
+      let prev_btn = document.getElementById("prev_btn");
+      let new_btn = document.getElementById("new_turn");
+
+      if (e && arg == "n") {
+        if (this.active_user === this.game_info.length - 2) {
+          next_btn.style.display = "none";
+          prev_btn.style.display = "block";
+          new_btn.style.display = "block";
+        }
+        block_for_players.childNodes[
+          this.active_user + 1
+        ].style.backgroundColor = "#bfedcd";
+
+        this.active_user++;
+        this.active_player_name = this.game_info[this.active_user].name;
+
+        block_for_players.childNodes[
+          this.active_user + 1
+        ].style.backgroundColor = "rgb(175, 174, 174)";
+
+        this.buildHistory();
+      } else if (e && arg == "p") {
+        let index = this.game_info.length - 1;
+        if (this.active_user === 1) {
+          prev_btn.style.display = "none";
+          next_btn.style.display = "block";
+        }
+        block_for_players.childNodes[
+          this.active_user + 1
+        ].style.backgroundColor = "#bfedcd";
+
+        this.active_user--;
+        this.active_player_name = this.game_info[this.active_user].name;
+
+        block_for_players.childNodes[
+          this.active_user + 1
+        ].style.backgroundColor = "rgb(175, 174, 174)";
+
+        this.buildHistory();
+      }
     },
     home() {
       this.$root.socket.emit("exitGame");
@@ -183,7 +266,7 @@ export default {
   background: rgba(255, 234, 13, 0.28);
   min-width: 35%;
   margin: 0 1.5em;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 .end-game {
   align-self: stretch;
@@ -223,7 +306,7 @@ export default {
 }
 
 .game-session-album {
-  height: 100vh;
+  max-height: 100%;
   width: 100%;
 }
 .players {
@@ -232,19 +315,133 @@ export default {
 .album-name {
   text-transform: uppercase;
 }
+#prev_btn {
+  display: none;
+  border: none;
+  margin-bottom: 10px;
+  font-size: 0.5em;
+}
+#next_btn {
+  border: none;
+  margin-bottom: 10px;
+  font-size: 0.5em;
+}
+#new_turn {
+  font-size: 0.5em;
+}
+.msg-block-right {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.msg-block-right > .message {
+  padding: 10px;
+  min-height: 26px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  -webkit-box-align: center;
+  align-items: center;
+  max-width: 460px;
+  background-color: rgb(255, 255, 255);
+  margin: 0px 10px 0px 0px;
+  border: 1px solid rgb(194, 194, 194);
+  border-radius: 5px 0px 5px 5px;
+  box-shadow: rgb(0 0 0 / 17%) 0px 2px 2px 0px;
+  font-family: Bold;
+  font-size: 2vw;
+  color: rgb(68, 68, 68);
+  letter-spacing: -0.13px;
+  line-height: 18px;
+  word-break: break-word;
+}
+.msg-block-right > .message::after {
+  position: absolute;
+  top: -1px;
+  right: -15px;
+  display: flex;
+  content: "";
+  width: 16px;
+  height: 18px;
+  background-image: url("../images/bg_ans.png");
+  background-repeat: no-repeat;
+}
+
+.msg-block-right > .msg-autor {
+  font-size: 10px;
+  text-align: right;
+  text-transform: uppercase;
+}
+.msg-block-right > .msg-text {
+  margin: 5px 5px 3px;
+}
+.msg-block-left {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.msg-block-left > .message {
+  position: relative;
+  width: 30vw;
+  min-width: 56px;
+  /* height: 257px; */
+  min-height: 42px;
+  background-color: rgb(255, 255, 255);
+  margin: 5px 0px 0px 10px;
+  border: 1px solid rgb(194, 194, 194);
+  border-radius: 0px 5px 5px;
+  box-shadow: rgb(0 0 0 / 17%) 0px 2px 2px 0px;
+  padding: 2px;
+  display: flex;
+  flex-direction: row;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+.msg-block-left > .msg-autor {
+  font-size: 10px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.msg-block-left > .message::before {
+  position: absolute;
+  top: -1px;
+  left: -15px;
+  display: flex;
+  content: "";
+  width: 16px;
+  height: 18px;
+  background-image: url("../images/bg_drawing.png");
+  background-repeat: no-repeat;
+  background-position: 0px -1px;
+}
+#canvas_msg {
+  /* display: none; */
+}
+#albgs {
+  overflow-y: scroll;
+}
 @media (max-width: 860px) {
   .player {
-    font-size: 20px;
+    font-size: 14px;
     padding: 20px;
   }
   #custom-players {
     margin: 0;
     margin-bottom: 0.3em;
     min-width: 55%;
+    min-height: 50%;
   }
 
   .game-session-album {
-    height: 100%;
+    max-height: 20vh;
+  }
+  .end-p {
+    font-size: 7px;
   }
 }
 </style>

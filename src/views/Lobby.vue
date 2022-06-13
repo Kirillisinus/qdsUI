@@ -277,7 +277,7 @@ export default {
 
   .room {
     flex-direction: column;
-    align-items: center;
+    /* align-items: center; */
   }
 
   .right-side {
