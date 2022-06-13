@@ -15,7 +15,12 @@
       <div class="middle-logo">
         <!--<img src="../images/pen.png" alt="logo" class="mid-logo" />-->
         <!-- <canvas id="drawed-img">Обновите браузер!</canvas> -->
-        <img v-bind:src="imageSrc" alt="image" class="what-to-write" />
+        <img
+          v-bind:src="imageSrc"
+          alt="image"
+          id="game_img"
+          class="what-to-write"
+        />
         <div class="card">Write a sentence</div>
       </div>
 
@@ -69,9 +74,10 @@ export default {
     },
     async updContent() {
       let round_now = this.$store.getters.getCurRound - 2;
-      // if (round_now <= 0) {
-      //   return;
-      // }
+      if (round_now < 0) {
+        let game_img = document.getElementById("game_img");
+        game_img.style.display = "none";
+      }
       let crtr = this.$store.getters.getCreator;
       let status_code = "200";
       let url =

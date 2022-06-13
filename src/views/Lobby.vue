@@ -24,7 +24,12 @@
           <div class="settings-text">Custom settings</div>
           <div class="settings"></div>
           <div class="start-game">
-            <router-link class="button start-btn" to="#" @click="startGame">
+            <router-link
+              id="strt-btn"
+              class="button start-btn"
+              to="#"
+              @click="startGame"
+            >
               <div>Начать</div>
               <i class="icon-arrow-right"></i>
             </router-link>
@@ -63,7 +68,7 @@ export default {
 
     setTimeout(() => {
       this.updateAdminDiv();
-    }, 500);
+    }, 1000);
 
     this.$store.dispatch("setCreator", this.name);
   },
@@ -106,9 +111,14 @@ export default {
 
         //alert(arg1.trim() + "/ /" + this.$store.state.admin_name + "/");
 
-        if (arg1.trim() == this.$store.state.admin_name) {
+        if (arg1.trim() == this.$store.getters.getAdminName) {
           adms[i].childNodes[1].style.display = "block";
         }
+      }
+
+      if (localStorage.name != this.$store.getters.getAdminName) {
+        let str_btn = document.getElementById("strt-btn");
+        str_btn.style.display = "none";
       }
 
       /*if (adms.length <= 1) {
@@ -280,7 +290,9 @@ export default {
     min-width: unset;
     max-width: unset;
   }
+}
 
+@media (max-width: 350px) {
   .button {
     font-size: 10px;
   }

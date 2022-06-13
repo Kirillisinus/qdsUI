@@ -181,4 +181,10 @@ export default {
   opacity: 1;
   transform: translateX(-6px);
 }
+
+@media (max-width: 850px) {
+  .invite {
+    font-size: 20px;
+  }
+}
 </style>

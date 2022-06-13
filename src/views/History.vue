@@ -5,14 +5,19 @@
     <div class="room">
       <section id="custom-players" class="players"></section>
       <section class="album">
-        <div id="albn" class="album-name"></div>
+        <div id="albn" class="album-name count-players">
+          {{ active_player_name }}'s album
+        </div>
         <div id="albgs" class="game-session-album"></div>
         <div class="end-game">
           <div class="end">
             <p class="end-p">end of {{ name }}'s album</p>
           </div>
-
-          <router-link class="write" to="#" @click="newGame"
+          <button class="write" @click="buildHistory($event)">
+            Предыдущий
+          </button>
+          <button class="write" @click="buildHistory($event)">Следующий</button>
+          <router-link id="new_turn" class="write" to="#" @click="newGame"
             >Играть ещё</router-link
           >
         </div>
@@ -34,7 +39,8 @@ export default {
       name: (String = "Гость123123123"),
       users: [],
       game_info: null,
-      clicked_user: null,
+      active_user: null,
+      active_player_name: null,
     };
   },
   mounted() {
@@ -43,6 +49,8 @@ export default {
     }
 
     this.loadGameSessionInfo();
+
+    this.buildHistory();
   },
   methods: {
     async loadGameSessionInfo() {
@@ -61,10 +69,12 @@ export default {
       block_for_players.appendChild(playerCountBlock);
 
       for (let i = 0; i < resp.length; i++) {
-        // this.users.push(resp[i].name);
         if (i == 0) {
-          clicked_user = resp[i].name;
+          this.active_user = i;
+          this.active_player_name = resp[i].name;
         }
+
+        this.users.push(resp[i].name);
 
         let playerBlock = document.createElement("div");
         playerBlock.className = "player";
@@ -72,11 +82,31 @@ export default {
         block_for_players.appendChild(playerBlock);
       }
 
-      console.log(this.users);
+      block_for_players.childNodes[1].style.backgroundColor =
+        "rgb(175, 174, 174)";
     },
-    buildHistory() {
-      let album_name = document.getElementById("albn");
+    buildHistory(e) {
+      let block_for_players = document.getElementById("custom-players");
+
       let game_session_block = document.getElementById("albgs");
+
+      if (e) {
+        if (this.active_user === this.game_info - 1) {
+        }
+        block_for_players.childNodes[
+          this.active_user + 1
+        ].style.backgroundColor = "#bfedcd";
+
+        console.log(this.active_player_name + " " + this.active_user);
+        this.active_user++;
+
+        this.active_player_name = this.game_info[this.active_user].name;
+        console.log(this.active_player_name + " " + this.active_user);
+
+        block_for_players.childNodes[
+          this.active_user + 1
+        ].style.backgroundColor = "rgb(175, 174, 174)";
+      }
     },
     async newGame() {
       let loader = document.getElementById("load");
@@ -112,6 +142,10 @@ export default {
 
       this.$router.push("/lobby");
     },
+    choosePlayer() {
+      // let album_name = document.getElementById("albn");
+      // album_name.textContent = "";
+    },
     home() {
       this.$root.socket.emit("exitGame");
 
@@ -125,6 +159,9 @@ export default {
 </script>
 
 <style>
+#new_turn {
+  display: none;
+}
 .room {
   justify-content: space-between;
   padding: 0 10px;
@@ -156,11 +193,11 @@ export default {
   margin: 15px;
 }
 
-.player:hover {
+/* .player:hover {
   opacity: 1;
   background-color: rgb(175, 174, 174);
   cursor: pointer;
-}
+} */
 
 .end-p {
   font-family: Black;
@@ -191,6 +228,9 @@ export default {
 }
 .players {
   max-height: 100%;
+}
+.album-name {
+  text-transform: uppercase;
 }
 @media (max-width: 860px) {
   .player {
