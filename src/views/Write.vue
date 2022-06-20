@@ -45,7 +45,8 @@ export default {
       ready: false,
       canvas: null,
       context: null,
-      imageSrc: null,
+      imageSrc:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
     };
   },
   components: {
