@@ -133,7 +133,7 @@ export default {
 
     var bodySize = document.body.getBoundingClientRect();
     this.canvas.setAttribute("width", bodySize.width * 0.65);
-    //this.canvas.setAttribute("height", bodySize.width * 0.65);
+    //this.canvas.setAttribute("height", bodySize.width * 0.4);
 
     this.context = this.canvas.getContext("2d");
     this.context.lineCap = "round";
@@ -238,24 +238,6 @@ export default {
         document.body.style.overflow = "hidden";
         this.isDrawing = true;
 
-        /*console.log(
-        "--Start drawing--\n" +
-          "e.touches[0].pageX: " +
-          e.touches[0].pageX +
-          " e.touches[0].pageY: " +
-          e.touches[0].pageY +
-          "\nthis.canvas.offsetLeft: " +
-          this.canvas.offsetLeft +
-          " this.canvas.offsetTop: " +
-          this.canvas.offsetTop
-      );
-      console.log(
-        "e.touches[0].pageX - this.canvas.offsetLeft: " +
-          (e.touches[0].pageX - this.canvas.offsetLeft) +
-          " e.touches[0].pageY - this.canvas.offsetTop: " +
-          (e.touches[0].pageY - this.canvas.offsetTop)
-      );*/
-
         this.context.beginPath();
         this.context.moveTo(
           e.touches[0].pageX - this.canvas.offsetLeft,
@@ -276,7 +258,7 @@ export default {
       }
     },
     stopDrawing(e) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "scroll";
       if (e.target == canvas) {
         this.isDrawing = true;
       }
@@ -417,6 +399,7 @@ export default {
     height: 100%;*/
     margin: 0;
     margin-top: 1em;
+    width: 100%;
   }
 
   .btn-row > .back {
