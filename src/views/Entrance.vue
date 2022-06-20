@@ -52,10 +52,11 @@ export default {
 
       body.style.display = "none";
 
-      //loader.style.display = "block";
+      loader.style.display = "block";
 
       let url = "http://localhost:3000/login/" + this.name;
       let resp = "notok";
+      // await this.sleep(2000);
 
       await axios.get(url).then((response) => {
         resp = response.data.result;
@@ -84,6 +85,9 @@ export default {
         this.show = true;
       }
     },
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
   },
 };
 </script>
@@ -91,6 +95,9 @@ export default {
 <style>
 #load {
   display: none;
+  position: absolute;
+  left: 44vw;
+  top: 46vh;
 }
 #logo {
   display: block;
