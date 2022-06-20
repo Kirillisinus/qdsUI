@@ -54,7 +54,7 @@ export default {
     };
   },
   beforeMount() {},
-  mounted() {
+  async mounted() {
     this.$forceUpdate();
 
     /*if(confirm('Please, reload page')){
@@ -66,9 +66,9 @@ export default {
     location.href = goal;
     }*/
 
-    setTimeout(() => {
-      this.updateAdminDiv();
-    }, 1000);
+    // setTimeout(() => {
+    this.updateAdminDiv();
+    // }, 1000);
 
     this.$store.dispatch("setCreator", this.name);
   },

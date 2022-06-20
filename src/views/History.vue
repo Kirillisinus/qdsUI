@@ -8,39 +8,10 @@
         <div id="albn" class="album-name count-players">
           {{ active_player_name }}'s album
         </div>
-        <div id="albgs" class="game-session-album">
-          <div class="msg-block-right">
-            <span class="msg-autor">Гость123123123</span>
-            <div class="message">
-              <span class="msg-text">lorem ipsum</span>
-            </div>
-          </div>
-          <!-- <div class="msg-block-left">
-            <span class="msg-autor">Баба Пчола</span>
-            <div class="message">
-              <div class="msg-content">
-                <img id="img_msg" />
-              </div>
-            </div>
-          </div>
-          <div class="msg-block-right">
-            <span class="msg-autor">Деда Шер</span>
-            <div class="message">
-              <span class="msg-text">lorem ipsum</span>
-            </div>
-          </div> -->
-          <div class="msg-block-left">
-            <span class="msg-autor">james</span>
-            <div class="message">
-              <div class="msg-content">
-                <img id="img_msg" height="200" width="200" />
-              </div>
-            </div>
-          </div>
-        </div>
+        <div id="albgs" class="game-session-album"></div>
         <div class="end-game">
           <div class="end">
-            <p class="end-p">end of {{ name }}'s album</p>
+            <p class="end-p">end of {{ active_player_name }}'s album</p>
           </div>
           <div class="end-buttons">
             <button
@@ -68,6 +39,8 @@
 </template>
 
 <script >
+import { SCOPABLE_TYPES } from "@babel/types";
+import { createSimpleExpression } from "@vue/compiler-core";
 import axios from "axios";
 import { mapGetters } from "vuex";
 import Loader from "../components/loader.vue";
@@ -84,14 +57,16 @@ export default {
       active_player_name: null,
     };
   },
-  mounted() {
+  async mounted() {
     if (localStorage.name) {
       this.name = localStorage.name;
     }
 
-    this.loadGameSessionInfo();
+    const result = await Promise.all([this.loadGameSessionInfo()]);
 
+    // setTimeout(() => {
     this.buildHistory();
+    // }, 1000);
   },
   methods: {
     async loadGameSessionInfo() {
@@ -126,29 +101,73 @@ export default {
       block_for_players.childNodes[1].style.backgroundColor =
         "rgb(175, 174, 174)";
     },
-    buildHistory() {
-      let game_session_block = document.getElementById("albgs");
+    async buildHistory() {
+      var game_session_block = document.getElementById("albgs");
 
-      let msgRightBlock = document.createElement("div");
-      msgRightBlock.className = "msg-block-right";
+      //e.firstElementChild can be used.
+      var child = game_session_block.lastElementChild;
+      while (child) {
+        game_session_block.removeChild(child);
+        child = game_session_block.lastElementChild;
+      }
 
-      let msgLeftBlock = document.createElement("div");
+      var msgLeftBlock = document.createElement("div");
       msgLeftBlock.className = "msg-block-left";
 
-      let msgAutor = document.createElement("div");
-      msgRightBlock.className = "msg-autor";
+      for (let i = 0; i < this.game_info[this.active_user].items.length; i++) {
+        if (i % 2 == 0) {
+          let msgRightBlock = document.createElement("div");
+          msgRightBlock.className = "msg-block-right";
 
-      let msgMessage = document.createElement("div");
-      msgRightBlock.className = "message";
+          let msgAutor = document.createElement("span");
+          msgAutor.className = "msg-autor";
+          msgAutor.innerHTML =
+            this.game_info[this.active_user].items[i].creator;
+          msgRightBlock.appendChild(msgAutor);
 
-      let msgText = document.createElement("div");
-      msgRightBlock.className = "msg-text";
+          let msgMessage = document.createElement("div");
+          msgMessage.className = "message";
 
-      let msgContent = document.createElement("div");
-      msgRightBlock.className = "msg-content";
+          let msgText = document.createElement("span");
+          msgText.className = "msg-text";
+          msgText.innerHTML = this.game_info[this.active_user].items[i].data;
+          msgMessage.appendChild(msgText);
 
-      let msgImg = document.createElement("div");
-      msgRightBlock.className = "img_msg";
+          msgRightBlock.appendChild(msgMessage);
+
+          msgRightBlock.classList.add("b-show");
+          game_session_block.appendChild(msgRightBlock);
+          await this.sleep(2500);
+        } else {
+          let msgLeftBlock = document.createElement("div");
+          msgLeftBlock.className = "msg-block-left";
+
+          let msgAutor = document.createElement("span");
+          msgAutor.className = "msg-autor";
+          msgAutor.innerHTML =
+            this.game_info[this.active_user].items[i].creator;
+          msgLeftBlock.appendChild(msgAutor);
+
+          let msgMessage = document.createElement("div");
+          msgMessage.className = "message";
+
+          let msgContent = document.createElement("div");
+          msgContent.className = "msg-content";
+
+          let msgImg = document.createElement("img");
+          msgImg.setAttribute("id", "img_msg");
+          msgImg.src = this.game_info[this.active_user].items[i].data;
+          msgImg.style.height = "100px";
+          msgImg.style.width = "200px";
+          msgContent.appendChild(msgImg);
+          msgMessage.appendChild(msgContent);
+
+          msgLeftBlock.appendChild(msgMessage);
+          msgLeftBlock.classList.add("b-show");
+          game_session_block.appendChild(msgLeftBlock);
+          await this.sleep(2500);
+        }
+      }
     },
     async newGame() {
       let loader = document.getElementById("load");
@@ -238,6 +257,9 @@ export default {
 
       this.$router.push("/");
     },
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
   },
   computed: {
     ...mapGetters(["getNumPlayers", "getPlayers"]),
@@ -311,8 +333,9 @@ export default {
 }
 
 .game-session-album {
-  max-height: 100%;
+  height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 .players {
   max-height: 100%;
@@ -424,8 +447,17 @@ export default {
   background-repeat: no-repeat;
   background-position: 0px -1px;
 }
-#canvas_msg {
-  /* display: none; */
+.b-show {
+  animation: showBlock 1s linear forwards;
+}
+
+@keyframes showBlock {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 #albgs {
   overflow-y: scroll;
@@ -443,18 +475,25 @@ export default {
     margin: 0;
     margin-bottom: 0.3em;
     min-width: 55%;
-    min-height: 50%;
+    min-height: 20vh;
   }
 
   .game-session-album {
-    max-height: 50vh;
+    max-height: 40vh;
   }
   .end-p {
-    font-size: 0.7em;
+    font-size: 0.6em;
   }
 
   #next_btn {
-    font-size: 1em;
+    font-size: 0.6em;
+  }
+
+  #new_turn {
+    font-size: 0.6em;
+  }
+  #prev_btn {
+    font-size: 0.6em;
   }
 }
 </style>
