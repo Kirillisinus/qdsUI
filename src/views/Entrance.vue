@@ -76,7 +76,7 @@ export default {
       }
       localStorage.name = this.name;
       localStorage.reload = true;
-      this.$router.push("/lobby");
+      this.$router.replace("/lobby");
     },
     showToggle() {
       if (this.show) {

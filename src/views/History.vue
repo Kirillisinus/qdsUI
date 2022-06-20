@@ -90,7 +90,7 @@ export default {
           this.active_player_name = resp[i].name;
         }
 
-        this.users.push(resp[i].name);
+        this.users.replace(resp[i].name);
 
         let playerBlock = document.createElement("div");
         playerBlock.className = "player";
@@ -201,7 +201,7 @@ export default {
       }
       localStorage.name = this.name;
 
-      this.$router.push("/lobby");
+      this.$router.replace("/lobby");
     },
     choosePlayer(e, arg) {
       let block_for_players = document.getElementById("custom-players");
@@ -255,7 +255,7 @@ export default {
     home() {
       this.$root.socket.emit("exitGame");
 
-      this.$router.push("/");
+      this.$router.replace("/");
     },
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));

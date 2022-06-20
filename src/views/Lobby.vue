@@ -7,7 +7,9 @@
     <div class="lobby">
       <div class="room">
         <div class="right-side">
-          <div class="count-players">Players {{ getNumPlayers }}/16</div>
+          <div id="ply-blck" class="count-players">
+            Players {{ getNumPlayers }}/16
+          </div>
           <section class="players">
             <div
               id="plyr"
@@ -47,6 +49,7 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+import { createElementBlock } from "@vue/runtime-core";
 export default {
   data() {
     return {
@@ -55,20 +58,9 @@ export default {
   },
   beforeMount() {},
   async mounted() {
-    this.$forceUpdate();
-
-    /*if(confirm('Please, reload page')){
-      location.reload();
-    }
-    if(localStorage.reload){
-      localStorage.reload = false;
-    var goal = self.location;
-    location.href = goal;
-    }*/
-
-    // setTimeout(() => {
-    this.updateAdminDiv();
-    // }, 1000);
+    setTimeout(() => {
+      this.updateAdminDiv();
+    }, 1000);
 
     this.$store.dispatch("setCreator", this.name);
   },
@@ -77,6 +69,7 @@ export default {
       //this.admin = args;
 
       this.$store.dispatch("reqPlayers", args);
+      this.$forceUpdate();
       //this.$store.dispatch("setAdminName", args);
     });
 
@@ -88,7 +81,7 @@ export default {
       //alert("this is args from serv: " + args);
       this.$store.dispatch("setRounds");
       this.$store.dispatch("setTimeLimit", args);
-      this.$router.push("/write");
+      this.$router.replace("/write");
     });
 
     this.$root.socket.emit("enterLobby", this.name);
@@ -102,7 +95,7 @@ export default {
     },
 
     goBack() {
-      this.$router.push("/");
+      this.$router.replace("/");
     },
     updateAdminDiv() {
       let adms = document.getElementsByClassName("player");
@@ -124,6 +117,9 @@ export default {
       /*if (adms.length <= 1) {
         adm.childNodes[1].style.display = "block";
       }*/
+    },
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
   computed: {

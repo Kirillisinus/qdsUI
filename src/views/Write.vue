@@ -146,7 +146,7 @@ export default {
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
-      this.$router.push("/" + args[0].next_page);
+      this.$router.replace("/" + args[0].next_page);
     });
 
     this.$root.socket.on("timeIsUp", () => {
