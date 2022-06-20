@@ -57,6 +57,7 @@ body {
     0px 3px 0px 0px rgb(255 255 255 / 15%);
   border-radius: 12px;
   max-width: 80vw;
+  min-height: 90vh;
 }
 
 @media (max-width: 877px) {

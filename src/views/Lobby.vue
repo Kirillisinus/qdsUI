@@ -187,7 +187,7 @@ export default {
   border-radius: 20px;
   background: rgba(255, 234, 13, 0.28);
   min-width: 35%;
-  margin: 0 1.5em;
+  margin: 0 1em;
   overflow: hidden;
 }
 
@@ -251,6 +251,7 @@ export default {
   align-items: center;
   font-size: 2.5vw;
   padding: 0.5em;
+  margin: 0 1em;
 }
 
 .start-game {

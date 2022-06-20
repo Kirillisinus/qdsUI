@@ -100,12 +100,16 @@ export default {
       });
 
       var image = new Image();
+      let IMG = document.getElementById("rdy-i");
 
       if (status_code === "200") {
         await axios.get(url).then((response) => {
           image.src = response.data.data;
           // console.log(image.src);
           this.imageSrc = response.data.data;
+
+          IMG.style.height = "100px";
+          IMG.style.width = "200px";
           // this.context.drawImage(image, 0, 0, 500, 300);
 
           //this.loadImageURL(response.data.data);
@@ -266,6 +270,10 @@ export default {
   display: none;
   height: 3em;
   width: 3em;
+}
+
+#rdy-i {
+  display: none;
 }
 
 @media (max-width: 858px) {
