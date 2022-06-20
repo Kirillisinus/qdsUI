@@ -15,7 +15,12 @@
       <div class="middle-logo">
         <!--<img src="../images/pen.png" alt="logo" class="mid-logo" />-->
         <!-- <canvas id="drawed-img">Обновите браузер!</canvas> -->
-        <img v-bind:src="imageSrc" alt="image" class="what-to-write" />
+        <img
+          v-bind:src="imageSrc"
+          alt="image"
+          id="game_img"
+          class="what-to-write"
+        />
         <div class="card">Write a sentence</div>
       </div>
 
@@ -40,7 +45,8 @@ export default {
       ready: false,
       canvas: null,
       context: null,
-      imageSrc: null,
+      imageSrc:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
     };
   },
   components: {
@@ -69,9 +75,10 @@ export default {
     },
     async updContent() {
       let round_now = this.$store.getters.getCurRound - 2;
-      // if (round_now <= 0) {
-      //   return;
-      // }
+      if (round_now < 0) {
+        let game_img = document.getElementById("game_img");
+        game_img.style.display = "none";
+      }
       let crtr = this.$store.getters.getCreator;
       let status_code = "200";
       let url =
@@ -94,12 +101,16 @@ export default {
       });
 
       var image = new Image();
+      let IMG = document.getElementById("rdy-i");
 
       if (status_code === "200") {
         await axios.get(url).then((response) => {
           image.src = response.data.data;
           // console.log(image.src);
           this.imageSrc = response.data.data;
+
+          IMG.style.height = "100px";
+          IMG.style.width = "200px";
           // this.context.drawImage(image, 0, 0, 500, 300);
 
           //this.loadImageURL(response.data.data);
@@ -136,7 +147,7 @@ export default {
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
-      this.$router.push("/" + args[0].next_page);
+      this.$router.replace("/" + args[0].next_page);
     });
 
     this.$root.socket.on("timeIsUp", () => {
@@ -260,6 +271,10 @@ export default {
   display: none;
   height: 3em;
   width: 3em;
+}
+
+#rdy-i {
+  display: none;
 }
 
 @media (max-width: 858px) {
