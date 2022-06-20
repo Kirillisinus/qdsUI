@@ -74,8 +74,11 @@ export default {
       let resp;
 
       await axios.get(url).then((response) => {
+        console.log(response.data);
         resp = response.data;
+
         this.game_info = response.data;
+        console.log(this.game_info);
       });
 
       let block_for_players = document.getElementById("custom-players");
@@ -84,13 +87,15 @@ export default {
       playerCountBlock.textContent = "Players " + resp.length + "/16";
       block_for_players.appendChild(playerCountBlock);
 
+      console.log(resp + resp.length);
+
       for (let i = 0; i < resp.length; i++) {
         if (i == 0) {
           this.active_user = i;
           this.active_player_name = resp[i].name;
         }
 
-        this.users.replace(resp[i].name);
+        this.users.push(resp[i].name);
 
         let playerBlock = document.createElement("div");
         playerBlock.className = "player";
