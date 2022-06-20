@@ -70,7 +70,7 @@ export default {
   },
   methods: {
     async loadGameSessionInfo() {
-      let url = "http://localhost:3000/history";
+      let url = "http://qds-serv.herokuapp.com/history";
       let resp;
 
       await axios.get(url).then((response) => {
