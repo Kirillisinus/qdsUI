@@ -55,13 +55,17 @@ export default {
 
     this.$store.dispatch("setCreator", this.name);
 
-    setTimeout(() => {
-      var isAdmin = confirm("Требуется обновить страницу?");
-
-      if (isAdmin) {
+    if (localStorage.refresh==="true") {
         this.reload();
-      }
-    }, 500);
+    }
+
+    // setTimeout(() => {
+    //   //var isAdmin = confirm("Требуется обновить страницу?");
+
+    //   if (localStorage.refresh) {
+    //     this.reload();
+    //   }
+    // }, 500);
   },
   created() {
     this.$root.socket.on("enterMsg", (...args) => {
@@ -121,7 +125,11 @@ export default {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
     reload() {
+      localStorage.refresh = false;
+
       location.reload();
+
+      
     }
   },
   computed: {

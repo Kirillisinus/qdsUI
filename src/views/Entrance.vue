@@ -40,6 +40,8 @@ export default {
     if (localStorage.name) {
       this.name = localStorage.name;
     }
+
+    localStorage.refresh = true;
   },
   methods: {
     async saveName() {

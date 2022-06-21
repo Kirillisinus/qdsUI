@@ -58,8 +58,8 @@ export default createStore({
       //alert("this is args inside vuex: " + new_time);
       ctx.commit("updateTimeLimit", new_time);
     },
-    async reqPlayers(ctx, adm_name) {
-      await axios.get("https://qds-serv.herokuapp.com/players").then((response) => {
+    reqPlayers(ctx, adm_name) {
+      axios.get("https://qds-serv.herokuapp.com/players").then((response) => {
         ctx.commit("updatePlayers", response.data);
         ctx.commit("updateAdmin", adm_name);
         //this.state.lobbys = response.data;
