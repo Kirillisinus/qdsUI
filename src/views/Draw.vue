@@ -206,24 +206,6 @@ export default {
         document.body.style.overflow = "hidden";
         this.isDrawing = true;
 
-        /*console.log(
-        "--Start drawing--\n" +
-          "e.touches[0].pageX: " +
-          e.touches[0].pageX +
-          " e.touches[0].pageY: " +
-          e.touches[0].pageY +
-          "\nthis.canvas.offsetLeft: " +
-          this.canvas.offsetLeft +
-          " this.canvas.offsetTop: " +
-          this.canvas.offsetTop
-      );
-      console.log(
-        "e.touches[0].pageX - this.canvas.offsetLeft: " +
-          (e.touches[0].pageX - this.canvas.offsetLeft) +
-          " e.touches[0].pageY - this.canvas.offsetTop: " +
-          (e.touches[0].pageY - this.canvas.offsetTop)
-      );*/
-
         this.context.beginPath();
         this.context.moveTo(
           e.touches[0].pageX - this.canvas.offsetLeft,
