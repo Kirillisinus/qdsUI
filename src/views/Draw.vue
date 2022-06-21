@@ -115,12 +115,13 @@ export default {
     }),
       this.$root.socket.on("timeIsUp", () => {
         if (!this.ready) {
+          this.ready = true;
           this.$root.socket.emit("writeData", {
             sentence: this.canvas.toDataURL(),
             creator: this.$store.getters.getCreator,
           });
         }
-        this.ready = true;
+        
       });
   },
   beforeMount() {

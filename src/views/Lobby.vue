@@ -11,12 +11,7 @@
             Players {{ getNumPlayers }}/16
           </div>
           <section class="players">
-            <div
-              id="plyr"
-              class="player"
-              v-for="(lobb, index) in getPlayers"
-              :key="index"
-            >
+            <div id="plyr" class="player" v-for="(lobb, index) in getPlayers" :key="index">
               {{ lobb.user }}
               <div class="adm-sign"></div>
             </div>
@@ -26,12 +21,7 @@
           <div class="settings-text">Custom settings</div>
           <div class="settings"></div>
           <div class="start-game">
-            <router-link
-              id="strt-btn"
-              class="button start-btn"
-              to="#"
-              @click="startGame"
-            >
+            <router-link id="strt-btn" class="button start-btn" to="#" @click="startGame">
               <div>Начать</div>
               <i class="icon-arrow-right"></i>
             </router-link>
@@ -56,13 +46,22 @@ export default {
       name: localStorage.name,
     };
   },
-  beforeMount() {},
+  beforeMount() { },
   async mounted() {
+
     setTimeout(() => {
       this.updateAdminDiv();
     }, 1000);
 
     this.$store.dispatch("setCreator", this.name);
+
+    setTimeout(() => {
+      var isAdmin = confirm("Требуется обновить страницу?");
+
+      if (isAdmin) {
+        this.reload();
+      }
+    }, 500);
   },
   created() {
     this.$root.socket.on("enterMsg", (...args) => {
@@ -121,6 +120,9 @@ export default {
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
+    reload() {
+      location.reload();
+    }
   },
   computed: {
     ...mapGetters(["getNumPlayers", "getPlayers"]),

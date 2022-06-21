@@ -63,6 +63,7 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
+        this.ready = true;
         let crtr = this.$store.getters.getCreator;
 
         this.$root.socket.emit("writeData", {
@@ -71,7 +72,7 @@ export default {
         });
       }
 
-      this.ready = true;
+      
     },
     async updContent() {
       let round_now = this.$store.getters.getCurRound - 2;
