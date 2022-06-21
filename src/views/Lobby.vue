@@ -7,9 +7,16 @@
     <div class="lobby">
       <div class="room">
         <div class="right-side">
-          <div class="count-players">Players {{ getNumPlayers }}/16</div>
+          <div id="ply-blck" class="count-players">
+            Players {{ getNumPlayers }}/16
+          </div>
           <section class="players">
-            <div id="plyr" class="player" v-for="(lobb, index) in getPlayers" :key="index">
+            <div
+              id="plyr"
+              class="player"
+              v-for="(lobb, index) in getPlayers"
+              :key="index"
+            >
               {{ lobb.user }}
               <div class="adm-sign"></div>
             </div>
@@ -19,7 +26,12 @@
           <div class="settings-text">Custom settings</div>
           <div class="settings"></div>
           <div class="start-game">
-            <router-link class="button start-btn" to="#" @click="startGame">
+            <router-link
+              id="strt-btn"
+              class="button start-btn"
+              to="#"
+              @click="startGame"
+            >
               <div>Начать</div>
               <i class="icon-arrow-right"></i>
             </router-link>
@@ -37,20 +49,18 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
-
+import { createElementBlock } from "@vue/runtime-core";
 export default {
   data() {
     return {
       name: localStorage.name,
     };
   },
-  beforeMount() { },
-  mounted() {
-    this.$forceUpdate();
-
+  beforeMount() {},
+  async mounted() {
     setTimeout(() => {
       this.updateAdminDiv();
-    }, 500);
+    }, 1000);
 
     this.$store.dispatch("setCreator", this.name);
   },
@@ -59,6 +69,7 @@ export default {
       //this.admin = args;
 
       this.$store.dispatch("reqPlayers", args);
+      this.$forceUpdate();
       //this.$store.dispatch("setAdminName", args);
     });
 
@@ -70,7 +81,7 @@ export default {
       //alert("this is args from serv: " + args);
       this.$store.dispatch("setRounds");
       this.$store.dispatch("setTimeLimit", args);
-      this.$router.push("/write");
+      this.$router.replace("/write");
     });
 
     this.$root.socket.emit("enterLobby", this.name);
@@ -84,7 +95,7 @@ export default {
     },
 
     goBack() {
-      this.$router.push("/");
+      this.$router.replace("/");
     },
     updateAdminDiv() {
       let adms = document.getElementsByClassName("player");
@@ -93,10 +104,22 @@ export default {
 
         //alert(arg1.trim() + "/ /" + this.$store.state.admin_name + "/");
 
-        if (arg1.trim() == this.$store.state.admin_name) {
+        if (arg1.trim() == this.$store.getters.getAdminName) {
           adms[i].childNodes[1].style.display = "block";
         }
       }
+
+      if (localStorage.name != this.$store.getters.getAdminName) {
+        let str_btn = document.getElementById("strt-btn");
+        str_btn.style.display = "none";
+      }
+
+      /*if (adms.length <= 1) {
+        adm.childNodes[1].style.display = "block";
+      }*/
+    },
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
   computed: {
@@ -160,7 +183,7 @@ export default {
   border-radius: 20px;
   background: rgba(255, 234, 13, 0.28);
   min-width: 35%;
-  margin: 0 1.5em;
+  margin: 0 1em;
   overflow: hidden;
 }
 
@@ -224,6 +247,7 @@ export default {
   align-items: center;
   font-size: 2.5vw;
   padding: 0.5em;
+  margin: 0 1em;
 }
 
 .start-game {
@@ -250,7 +274,7 @@ export default {
 
   .room {
     flex-direction: column;
-    align-items: center;
+    /* align-items: center; */
   }
 
   .right-side {
@@ -263,9 +287,11 @@ export default {
     min-width: unset;
     max-width: unset;
   }
+}
 
+@media (max-width: 350px) {
   .button {
-    font-size: 15px;
+    font-size: 10px;
   }
 }
 </style>

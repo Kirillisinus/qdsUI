@@ -26,10 +26,10 @@ export default createStore({
     getNumRounds(state) {
       return state.rounds;
     },
-    getCurRound(state){
+    getCurRound(state) {
       return state.round;
     },
-    getCreator(state){
+    getCreator(state) {
       return state.creator;
     }
   },
@@ -49,7 +49,7 @@ export default createStore({
     updateRound(state) {
       state.round++;
     },
-    updateCreator(state, new_creator){
+    updateCreator(state, new_creator) {
       state.creator = new_creator;
     }
   },
@@ -74,7 +74,7 @@ export default createStore({
     setRound(ctx) {
       ctx.commit("updateRound");
     },
-    setCreator(ctx, new_crtr){
+    setCreator(ctx, new_crtr) {
       ctx.commit("updateCreator", new_crtr);
     }
   },

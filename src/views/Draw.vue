@@ -2,17 +2,29 @@
   <div class="draw-image">
     <div class="up">
       <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
-      <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
+      <!-- <img src="../images/logo_transparent.png" alt="logo" id="logo-write" /> -->
       <baseTimer id="timer" class="base-timer"></baseTimer>
-      <img src="../images/check.png" alt="ready" class="ready-icon" id="rdy-i" />
+      <img
+        src="../images/check.png"
+        alt="ready"
+        class="ready-icon"
+        id="rdy-i"
+      />
     </div>
     <div class="call-draw">Попробуй нарисовать!</div>
     <div class="prev-sentence">{{ sentence }}</div>
     <div class="middle-draw">
       <div id="palette"></div>
-      <canvas id="canvas" @mousemove="drawIfPressed($event)" @touchmove="drawIfTouched($event)"
-        @touchstart="startDrawing($event)" @touchend="stopDrawing($event)" height="500" width="900">Обновите
-        браузер!</canvas>
+      <canvas
+        id="canvas"
+        @mousemove="drawIfPressed($event)"
+        @touchmove="drawIfTouched($event)"
+        @touchstart="startDrawing($event)"
+        @touchend="stopDrawing($event)"
+        height="500"
+        width="900"
+        >Обновите браузер!</canvas
+      >
     </div>
     <div class="down">
       <div class="controls">
@@ -21,15 +33,29 @@
         </div>
 
         <div class="btn-row">
-          <label v-for="sizeItem in sizes" class="size-item" v-bind:key="sizeItem">
-            <input type="radio" name="size" v-model="size" v-bind:value="sizeItem" class="size" v-bind:style="{
-              width: sizeItem + 10 + 'px',
-              height: sizeItem + 10 + 'px',
-            }" @change="setSize(sizeItem)" />
+          <label
+            v-for="sizeItem in sizes"
+            class="size-item"
+            v-bind:key="sizeItem"
+          >
+            <input
+              type="radio"
+              name="size"
+              v-model="size"
+              v-bind:value="sizeItem"
+              class="size"
+              v-bind:style="{
+                width: sizeItem + 10 + 'px',
+                height: sizeItem + 10 + 'px',
+              }"
+              @change="setSize(sizeItem)"
+            />
           </label>
         </div>
         <div class="btn-row"></div>
-        <router-link id="d-bt" class="write" to="#" @click="done">done</router-link>
+        <router-link id="d-bt" class="write" to="#" @click="done"
+          >done</router-link
+        >
       </div>
     </div>
   </div>
@@ -77,17 +103,22 @@ export default {
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("writeData", { "sentence": this.canvas.toDataURL(), "creator": this.$store.getters.getCreator });
+        this.$root.socket.emit("writeData", {
+          sentence: this.canvas.toDataURL(),
+          creator: this.$store.getters.getCreator,
+        });
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
-      
-      this.$router.push("/" + args[0].next_page);
+      this.$router.replace("/" + args[0].next_page);
     }),
       this.$root.socket.on("timeIsUp", () => {
         if (!this.ready) {
-          this.$root.socket.emit("writeData", { "sentence": this.canvas.toDataURL(), "creator": this.$store.getters.getCreator });
+          this.$root.socket.emit("writeData", {
+            sentence: this.canvas.toDataURL(),
+            creator: this.$store.getters.getCreator,
+          });
         }
         this.ready = true;
       });
@@ -102,7 +133,7 @@ export default {
 
     var bodySize = document.body.getBoundingClientRect();
     this.canvas.setAttribute("width", bodySize.width * 0.65);
-    //this.canvas.setAttribute("height", bodySize.width * 0.65);
+    //this.canvas.setAttribute("height", bodySize.width * 0.4);
 
     this.context = this.canvas.getContext("2d");
     this.context.lineCap = "round";
@@ -117,8 +148,6 @@ export default {
       paletteBlock.style.backgroundColor = this.colors[r];
       palette.appendChild(paletteBlock);
     }
-
-
   },
   beforeUnmount() {
     TweenMax.pauseAll();
@@ -136,13 +165,16 @@ export default {
 
       if (!this.ready) {
         let crtr = this.$store.getters.getCreator;
-        this.$root.socket.emit("writeData", { "sentence": this.canvas.toDataURL(), "creator": crtr });
+        this.$root.socket.emit("writeData", {
+          sentence: this.canvas.toDataURL(),
+          creator: crtr,
+        });
       }
 
       this.ready = true;
     },
     async updContent() {
-      let round_now=this.$store.getters.getCurRound-2;
+      let round_now = this.$store.getters.getCurRound - 2;
       //alert("round_now" + round_now);
       let crtr = this.$store.getters.getCreator;
       let status_code = "200";
@@ -226,7 +258,7 @@ export default {
       }
     },
     stopDrawing(e) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "scroll";
       if (e.target == canvas) {
         this.isDrawing = true;
       }
@@ -354,6 +386,7 @@ export default {
     display: flex;
     justify-content: center;
     margin: 0 auto;
+    flex-wrap: wrap;
   }
 
   .color {
@@ -366,13 +399,18 @@ export default {
     height: 100%;*/
     margin: 0;
     margin-top: 1em;
+    width: 100%;
   }
 
-  .btn-row>.back {
+  .btn-row > .back {
     width: 90px;
   }
 
-  .controls>.write {
+  .btn-row {
+    padding: 0;
+  }
+
+  .controls > .write {
     margin-bottom: 7px;
     padding: 10px 29px;
   }

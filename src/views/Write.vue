@@ -4,18 +4,31 @@
       <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer id="timer" class="base-timer"></baseTimer>
-      <img src="../images/check.png" alt="ready" class="ready-icon" id="rdy-i" />
+      <img
+        src="../images/check.png"
+        alt="ready"
+        class="ready-icon"
+        id="rdy-i"
+      />
     </div>
     <div class="middle">
       <div class="middle-logo">
         <!--<img src="../images/pen.png" alt="logo" class="mid-logo" />-->
-        <canvas id="drawed-img">Обновите браузер!</canvas>
+        <!-- <canvas id="drawed-img">Обновите браузер!</canvas> -->
+        <img
+          v-bind:src="imageSrc"
+          alt="image"
+          id="game_img"
+          class="what-to-write"
+        />
         <div class="card">Write a sentence</div>
       </div>
 
       <div class="input">
         <input class="sentence" type="text" v-model="sentence" />
-        <router-link id="wr-bt" class="write" to="#" @click="done">done</router-link>
+        <router-link id="wr-bt" class="write" to="#" @click="done"
+          >done</router-link
+        >
       </div>
     </div>
   </div>
@@ -32,6 +45,8 @@ export default {
       ready: false,
       canvas: null,
       context: null,
+      imageSrc:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
     };
   },
   components: {
@@ -48,16 +63,21 @@ export default {
       timer.style.display = "none";
 
       if (!this.ready) {
-        //alert(this.$store.getters.getCreator);
-        this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
+        let crtr = this.$store.getters.getCreator;
+
+        this.$root.socket.emit("writeData", {
+          sentence: this.sentence,
+          creator: crtr,
+        });
       }
 
       this.ready = true;
     },
     async updContent() {
       let round_now = this.$store.getters.getCurRound - 2;
-      if (round_now <= 0) {
-        return;
+      if (round_now < 0) {
+        let game_img = document.getElementById("game_img");
+        game_img.style.display = "none";
       }
       let crtr = this.$store.getters.getCreator;
       let status_code = "200";
@@ -81,26 +101,31 @@ export default {
       });
 
       var image = new Image();
+      let IMG = document.getElementById("rdy-i");
 
       if (status_code === "200") {
         await axios.get(url).then((response) => {
           image.src = response.data.data;
-          //console.log(image.src);
-          this.context.drawImage(image, 0, 0, 500,300);
+          // console.log(image.src);
+          this.imageSrc = response.data.data;
+
+          IMG.style.height = "100px";
+          IMG.style.width = "200px";
+          // this.context.drawImage(image, 0, 0, 500, 300);
+
           //this.loadImageURL(response.data.data);
           //this.sentence = response.data.data;
           //alert(response.data.data);
 
           //this.$store.dispatch("setCreator", response.data.creator);
         });
-
-
       }
     },
     loadImageURL(base64) {
       var image = document.createElement("img");
       image.addEventListener("load", function () {
-        var color = this.context.fillStyle, size = this.context.lineWidth;
+        var color = this.context.fillStyle,
+          size = this.context.lineWidth;
         this.context.canvas.width = image.width;
         this.context.canvas.height = image.height;
         this.context.drawImage(image, 0, 0);
@@ -109,30 +134,34 @@ export default {
         this.context.lineWidth = size;
       });
       image.src = base64;
-    }
+    },
   },
   created() {
     this.$root.socket.on("goNextMsg", (...args) => {
       if (!this.ready) {
-        this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
+        this.$root.socket.emit("writeData", {
+          sentence: this.sentence,
+          creator: this.$store.getters.getCreator,
+        });
       }
 
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
-
-      this.$router.push("/" + args[0].next_page);
+      this.$router.replace("/" + args[0].next_page);
     });
 
     this.$root.socket.on("timeIsUp", () => {
       this.ready = true;
 
-      this.$root.socket.emit("writeData", { "sentence": this.sentence, "creator": this.$store.getters.getCreator });
+      this.$root.socket.emit("writeData", {
+        sentence: this.sentence,
+        creator: this.$store.getters.getCreator,
+      });
     });
 
     /*this.$root.socket.on("updCreator", (...args) => {
       alert("set creator = " + args);
     });*/
-
   },
   beforeMount() {
     this.updContent();
@@ -244,6 +273,10 @@ export default {
   width: 3em;
 }
 
+#rdy-i {
+  display: none;
+}
+
 @media (max-width: 858px) {
   .player {
     font-size: 2em;
@@ -261,10 +294,16 @@ export default {
   .sentence {
     height: 4vh;
     margin: 0;
+    font-size: 3.7vh;
   }
 
-  .input>.write {
+  .input > .write {
     margin-top: 10px;
+  }
+
+  .what-to-write {
+    max-height: 200px;
+    max-width: 400px;
   }
 }
 </style>

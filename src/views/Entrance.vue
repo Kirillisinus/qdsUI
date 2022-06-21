@@ -55,9 +55,11 @@ export default {
       loader.style.display = "block";
       let url = "https://qds-serv.herokuapp.com/login/" + this.name;
       let resp = "notok";
+      // await this.sleep(2000);
 
       await axios.get(url).then((response) => {
         resp = response.data.result;
+
         loader.style.display = "none";
         body.style.display = "flex";
         content.style.border = "4px #f5d731f1 solid";
@@ -73,7 +75,17 @@ export default {
       }
       localStorage.name = this.name;
       localStorage.reload = true;
-      this.$router.push("/lobby");
+      this.$router.replace("/lobby");
+    },
+    showToggle() {
+      if (this.show) {
+        this.show = false;
+      } else {
+        this.show = true;
+      }
+    },
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
 };
@@ -83,8 +95,8 @@ export default {
 #load {
   display: none;
   position: absolute;
-  top: 50%;
-  left: 50%;
+  left: 44vw;
+  top: 46vh;
 }
 #logo {
   display: block;
@@ -174,5 +186,11 @@ export default {
 .button:hover i {
   opacity: 1;
   transform: translateX(-6px);
+}
+
+@media (max-width: 850px) {
+  .invite {
+    font-size: 20px;
+  }
 }
 </style>
