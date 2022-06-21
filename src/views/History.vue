@@ -90,7 +90,7 @@ export default {
           this.active_player_name = resp[i].name;
         }
 
-        this.users.replace(resp[i].name);
+        this.users.push(resp[i].name);
 
         let playerBlock = document.createElement("div");
         playerBlock.className = "player";

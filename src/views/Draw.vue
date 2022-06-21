@@ -4,27 +4,15 @@
       <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
       <!-- <img src="../images/logo_transparent.png" alt="logo" id="logo-write" /> -->
       <baseTimer id="timer" class="base-timer"></baseTimer>
-      <img
-        src="../images/check.png"
-        alt="ready"
-        class="ready-icon"
-        id="rdy-i"
-      />
+      <img src="../images/check.png" alt="ready" class="ready-icon" id="rdy-i" />
     </div>
     <div class="call-draw">Попробуй нарисовать!</div>
     <div class="prev-sentence">{{ sentence }}</div>
     <div class="middle-draw">
       <div id="palette"></div>
-      <canvas
-        id="canvas"
-        @mousemove="drawIfPressed($event)"
-        @touchmove="drawIfTouched($event)"
-        @touchstart="startDrawing($event)"
-        @touchend="stopDrawing($event)"
-        height="500"
-        width="900"
-        >Обновите браузер!</canvas
-      >
+      <canvas id="canvas" @mousemove="drawIfPressed($event)" @touchmove="drawIfTouched($event)"
+        @touchstart="startDrawing($event)" @touchend="stopDrawing($event)" height="500" width="900">Обновите
+        браузер!</canvas>
     </div>
     <div class="down">
       <div class="controls">
@@ -33,29 +21,15 @@
         </div>
 
         <div class="btn-row">
-          <label
-            v-for="sizeItem in sizes"
-            class="size-item"
-            v-bind:key="sizeItem"
-          >
-            <input
-              type="radio"
-              name="size"
-              v-model="size"
-              v-bind:value="sizeItem"
-              class="size"
-              v-bind:style="{
-                width: sizeItem + 10 + 'px',
-                height: sizeItem + 10 + 'px',
-              }"
-              @change="setSize(sizeItem)"
-            />
+          <label v-for="sizeItem in sizes" class="size-item" v-bind:key="sizeItem">
+            <input type="radio" name="size" v-model="size" v-bind:value="sizeItem" class="size" v-bind:style="{
+              width: sizeItem + 10 + 'px',
+              height: sizeItem + 10 + 'px',
+            }" @change="setSize(sizeItem)" />
           </label>
         </div>
         <div class="btn-row"></div>
-        <router-link id="d-bt" class="write" to="#" @click="done"
-          >done</router-link
-        >
+        <router-link id="d-bt" class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
   </div>
@@ -112,16 +86,18 @@ export default {
       this.$store.dispatch("setTimeLimit", args[0].round_time);
 
       this.$router.replace("/" + args[0].next_page);
-    }),
-      this.$root.socket.on("timeIsUp", () => {
-        if (!this.ready) {
-          this.$root.socket.emit("writeData", {
-            sentence: this.canvas.toDataURL(),
-            creator: this.$store.getters.getCreator,
-          });
-        }
+    });
+    this.$root.socket.on("timeIsUp", () => {
+      if (!this.ready) {
         this.ready = true;
-      });
+
+        this.$root.socket.emit("writeData", {
+          sentence: this.canvas.toDataURL(),
+          creator: this.$store.getters.getCreator,
+        });
+      }
+
+    });
   },
   beforeMount() {
     this.updContent();
@@ -419,7 +395,7 @@ export default {
     margin-top: 1em;
   }
 
-  .btn-row > .back {
+  .btn-row>.back {
     width: 90px;
   }
 
@@ -427,7 +403,7 @@ export default {
     padding: 0;
   }
 
-  .controls > .write {
+  .controls>.write {
     margin-bottom: 7px;
     padding: 10px 29px;
   }
