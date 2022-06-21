@@ -74,11 +74,11 @@ export default {
       let resp;
 
       await axios.get(url).then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
         resp = response.data;
 
         this.game_info = response.data;
-        console.log(this.game_info);
+        //console.log(this.game_info);
       });
 
       let block_for_players = document.getElementById("custom-players");
@@ -87,7 +87,7 @@ export default {
       playerCountBlock.textContent = "Players " + resp.length + "/16";
       block_for_players.appendChild(playerCountBlock);
 
-      console.log(resp + resp.length);
+      //console.log(resp + resp.length);
 
       for (let i = 0; i < resp.length; i++) {
         if (i == 0) {
@@ -96,6 +96,11 @@ export default {
         }
 
         this.users.push(resp[i].name);
+
+        if(this.users.length>0){
+          let next_btn=document.getElementById("next_btn");
+          next_btn.style.display='block;'
+        }
 
         let playerBlock = document.createElement("div");
         playerBlock.className = "player";
@@ -222,6 +227,7 @@ export default {
           new_btn.style.display = "block";
         } else {
           new_btn.style.display = "block";
+          next_btn.style.display = "none";
         }
         block_for_players.childNodes[
           this.active_user + 1
@@ -273,9 +279,6 @@ export default {
 </script>
 
 <style>
-#new_turn {
-  display: none;
-}
 .room {
   justify-content: space-between;
   padding: 0 10px;
@@ -355,6 +358,7 @@ export default {
   font-size: 0.5em;
 }
 #next_btn {
+  display: none;
   border: none;
   margin-bottom: 10px;
   font-size: 0.5em;
