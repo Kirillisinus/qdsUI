@@ -227,7 +227,7 @@ export default {
           new_btn.style.display = "block";
         } else {
           new_btn.style.display = "block";
-          next_btn.style.display = "none";
+          // next_btn.style.display = "none";
         }
         block_for_players.childNodes[
           this.active_user + 1
