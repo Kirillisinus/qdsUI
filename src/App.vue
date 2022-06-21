@@ -21,12 +21,12 @@ export default {
     alert(`Error: ${err.toString()}\nInfo: ${info}`);
   },
   errorCaptured(err, vm, info) {
-    // if (info === "render function") {
-    //   //alert(`cat EC: ${err.toString()}\ninfo: ${info}`);
-    //   //setTimeout(() => {
-    //   window.location.reload();
-    //   //}, 50);
-    // }
+    if (info === "render function") {
+      //alert(`cat EC: ${err.toString()}\ninfo: ${info}`);
+      //setTimeout(() => {
+      window.location.reload();
+      //}, 50);
+    }
 
     return false;
   },

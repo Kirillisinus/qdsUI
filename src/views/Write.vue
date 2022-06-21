@@ -4,31 +4,19 @@
       <div class="rounds">{{ getCurRound }}/{{ getNumRounds }}</div>
       <img src="../images/logo_transparent.png" alt="logo" id="logo-write" />
       <baseTimer id="timer" class="base-timer"></baseTimer>
-      <img
-        src="../images/check.png"
-        alt="ready"
-        class="ready-icon"
-        id="rdy-i"
-      />
+      <img src="../images/check.png" alt="ready" class="ready-icon" id="rdy-i" />
     </div>
     <div class="middle">
       <div class="middle-logo">
         <!--<img src="../images/pen.png" alt="logo" class="mid-logo" />-->
         <!-- <canvas id="drawed-img">Обновите браузер!</canvas> -->
-        <img
-          v-bind:src="imageSrc"
-          alt="image"
-          id="game_img"
-          class="what-to-write"
-        />
+        <img v-bind:src="imageSrc" alt="image" id="game_img" class="what-to-write" />
         <div class="card">Write a sentence</div>
       </div>
 
       <div class="input">
         <input class="sentence" type="text" v-model="sentence" />
-        <router-link id="wr-bt" class="write" to="#" @click="done"
-          >done</router-link
-        >
+        <router-link id="wr-bt" class="write" to="#" @click="done">done</router-link>
       </div>
     </div>
   </div>
@@ -152,12 +140,14 @@ export default {
     });
 
     this.$root.socket.on("timeIsUp", () => {
-      this.ready = true;
+      if (!this.ready) {
+        this.ready = true;
 
-      this.$root.socket.emit("writeData", {
-        sentence: this.sentence,
-        creator: this.$store.getters.getCreator,
-      });
+        this.$root.socket.emit("writeData", {
+          sentence: this.sentence,
+          creator: this.$store.getters.getCreator,
+        });
+      }
     });
 
     /*this.$root.socket.on("updCreator", (...args) => {
@@ -298,7 +288,7 @@ export default {
     font-size: 3.7vh;
   }
 
-  .input > .write {
+  .input>.write {
     margin-top: 10px;
   }
 
