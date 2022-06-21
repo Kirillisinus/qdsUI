@@ -97,16 +97,16 @@ export default {
 
         this.users.push(resp[i].name);
 
-        if(this.users.length>0){
-          let next_btn=document.getElementById("next_btn");
-          next_btn.style.display='block;'
-        }
-
         let playerBlock = document.createElement("div");
         playerBlock.className = "player";
         playerBlock.textContent = resp[i].name;
         block_for_players.appendChild(playerBlock);
       }
+
+      // if(this.resp.length > 0){
+      //     let next_btn=document.getElementById("next_btn");
+      //     next_btn.style.display='block;'
+      //   }
 
       block_for_players.childNodes[1].style.backgroundColor =
         "rgb(175, 174, 174)";
@@ -358,7 +358,7 @@ export default {
   font-size: 0.5em;
 }
 #next_btn {
-  display: none;
+  display: block;
   border: none;
   margin-bottom: 10px;
   font-size: 0.5em;
@@ -421,8 +421,8 @@ export default {
 }
 .msg-block-left > .message {
   position: relative;
-  width: 30vw;
-  min-width: 56px;
+  max-width: 30vw;
+  min-width: 156px;
   /* height: 257px; */
   min-height: 42px;
   background-color: rgb(255, 255, 255);
